@@ -1,0 +1,168 @@
+
+skin.png
+size: 32,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+check
+  rotate: false
+  xy: 15, 76
+  size: 16, 16
+  orig: 24, 24
+  offset: 4, 4
+  index: -1
+check-on
+  rotate: false
+  xy: 15, 59
+  size: 16, 16
+  orig: 24, 24
+  offset: 4, 4
+  index: -1
+dot
+  rotate: false
+  xy: 30, 105
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+knob-h
+  rotate: false
+  xy: 14, 50
+  size: 10, 1
+  orig: 24, 1
+  offset: 7, 0
+  index: -1
+knob-v
+  rotate: false
+  xy: 30, 107
+  size: 1, 10
+  orig: 1, 24
+  offset: 0, 7
+  index: -1
+line-h
+  rotate: false
+  xy: 7, 18
+  size: 24, 1
+  orig: 24, 1
+  offset: 0, 0
+  index: -1
+line-v
+  rotate: false
+  xy: 28, 93
+  size: 1, 24
+  orig: 1, 24
+  offset: 0, 0
+  index: -1
+rect
+  rotate: false
+  xy: 1, 33
+  size: 12, 24
+  orig: 12, 24
+  offset: 0, 0
+  index: -1
+select
+  rotate: false
+  xy: 1, 93
+  size: 26, 24
+  split: 4, 15, 0, 24
+  orig: 26, 24
+  offset: 0, 0
+  index: -1
+square
+  rotate: false
+  xy: 1, 1
+  size: 4, 4
+  orig: 4, 4
+  offset: 0, 0
+  index: -1
+tree-minus
+  rotate: false
+  xy: 15, 52
+  size: 12, 6
+  orig: 16, 16
+  offset: 2, 4
+  index: -1
+tree-plus
+  rotate: false
+  xy: 7, 20
+  size: 6, 12
+  orig: 16, 16
+  offset: 6, 2
+  index: -1
+window-border
+  rotate: false
+  xy: 1, 6
+  size: 5, 26
+  split: 2, 2, 23, 2
+  orig: 5, 26
+  offset: 0, 0
+  index: -1
+window-resize
+  rotate: false
+  xy: 1, 58
+  size: 13, 34
+  split: 2, 10, 23, 10
+  orig: 13, 34
+  offset: 0, 0
+  index: -1
+
+skin2.png
+size: 512,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+card/red-1
+  rotate: false
+  xy: 1, 1
+  size: 358, 558
+  orig: 358, 558
+  offset: 0, 0
+  index: -1
+
+skin3.png
+size: 1024,128
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+gem/black
+  rotate: false
+  xy: 547, 18
+  size: 94, 95
+  orig: 94, 95
+  offset: 0, 0
+  index: -1
+gem/blue
+  rotate: false
+  xy: 340, 15
+  size: 105, 98
+  orig: 105, 98
+  offset: 0, 0
+  index: -1
+gem/gold
+  rotate: false
+  xy: 114, 6
+  size: 112, 107
+  orig: 112, 107
+  offset: 0, 0
+  index: -1
+gem/green
+  rotate: false
+  xy: 1, 1
+  size: 112, 112
+  orig: 112, 112
+  offset: 0, 0
+  index: -1
+gem/red
+  rotate: false
+  xy: 446, 13
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+gem/white
+  rotate: false
+  xy: 227, 14
+  size: 112, 99
+  orig: 112, 99
+  offset: 0, 0
+  index: -1
