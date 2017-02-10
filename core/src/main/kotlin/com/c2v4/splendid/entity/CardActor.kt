@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.utils.Scaling
 import com.c2v4.splendid.core.model.Card
 
 class CardActor(card: Card, skin: Skin) : Table(skin) {
@@ -36,6 +37,8 @@ class CardActor(card: Card, skin: Skin) : Table(skin) {
 //        resourceTable.add("gem-red")
         card.costs.entries.forEach {
             val image = Image(skin, "gem-${it.key.name.toLowerCase()}")
+            image.setScaling(Scaling.fill)
+            image.setScale(0.75f)
             resourceTable.add(image)
             resourceTable.add("${it.value}")
             resourceTable.row()
