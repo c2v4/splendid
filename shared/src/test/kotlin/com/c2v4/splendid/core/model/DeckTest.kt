@@ -2,6 +2,7 @@ package com.c2v4.splendid.core.model
 
 import com.c2v4.splendid.core.model.Resource.GOLD
 import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertFalse
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
@@ -11,7 +12,7 @@ import java.util.*
 
 internal class DeckTest {
 
-    private var deck: Deck? = null
+    private var deck: Deck<Card>? = null
 
     @Mock
     private val random: Random? = null
@@ -54,21 +55,17 @@ internal class DeckTest {
         deck = Deck.shuffledDeck(random, cards)
 
         assertEquals(5, deck!!.size())
-        assertEquals(deck!!.peek().map(Card::points).orElse(0), 1)
-        deck = Deck.withoutFirst(deck!!)
+        assertEquals(deck!!.poll().map(Card::points).orElse(0), 1)
         assertEquals(4, deck!!.size())
-        assertEquals(deck!!.peek().map(Card::points).orElse(0), 2)
-        deck = Deck.withoutFirst(deck!!)
+        assertEquals(deck!!.poll().map(Card::points).orElse(0), 2)
         assertEquals(3, deck!!.size())
-        assertEquals(deck!!.peek().map(Card::points).orElse(0), 3)
-        deck = Deck.withoutFirst(deck!!)
+        assertEquals(deck!!.poll().map(Card::points).orElse(0), 3)
         assertEquals(2, deck!!.size())
-        assertEquals(deck!!.peek().map(Card::points).orElse(0), 4)
-        deck = Deck.withoutFirst(deck!!)
+        assertEquals(deck!!.poll().map(Card::points).orElse(0), 4)
         assertEquals(1, deck!!.size())
-        assertEquals(deck!!.peek().map(Card::points).orElse(0), 5)
-        deck = Deck.withoutFirst(deck!!)
+        assertEquals(deck!!.poll().map(Card::points).orElse(0), 5)
         assertEquals(0, deck!!.size())
+        assertFalse(deck!!.poll().isPresent)
     }
 
 }

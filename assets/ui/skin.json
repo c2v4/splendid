@@ -90,6 +90,11 @@
     gem-red: { name: gem/red, color: font },
     gem-white: { name: gem/white, color: font },
     gem-green: { name: gem/green, color: font },
+    gem-gold: { name: gem/gold, color: font },
+
+    noble-empty: {name:noble/empty, color:white}
+
+    card-empty: {name: card/empty, color: white}
 
     card-red-1: {name: card/red-1, color: white}
 

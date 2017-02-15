@@ -2,14 +2,14 @@ package com.c2v4.splendid.core.model
 
 import java.util.*
 
-class Deck private constructor(cards: List<Card>) {
-    private val cards: MutableList<Card>
+class  Deck  <T> private constructor(cards: List<T>) {
+    private val cards: MutableList<T>
 
     init {
         this.cards = ArrayList(cards)
     }
 
-    fun peek(): Optional<Card> {
+    fun peek(): Optional<T> {
         if (isEmpty()){
             return Optional.empty()
         }else{
@@ -25,7 +25,7 @@ class Deck private constructor(cards: List<Card>) {
         return cards.isEmpty()
     }
 
-    fun poll(): Optional<Card> {
+    fun poll(): Optional<T> {
         if(isEmpty()){
             return Optional.empty()
         }else{
@@ -35,9 +35,9 @@ class Deck private constructor(cards: List<Card>) {
 
     companion object {
 
-        fun shuffledDeck(random: Random, cards: List<Card>): Deck {
+        fun <T> shuffledDeck(random: Random, cards: List<T>): Deck<T> {
             val toPut = ArrayList(cards)
-            val toDeck = ArrayList<Card>(cards.size)
+            val toDeck = ArrayList<T>(cards.size)
             while (toPut.size > 0) {
                 val index = random.nextInt(toPut.size)
                 toDeck.add(toPut.removeAt(index))
@@ -45,10 +45,5 @@ class Deck private constructor(cards: List<Card>) {
             return Deck(toDeck)
         }
 
-        fun withoutFirst(deck: Deck): Deck {
-            val toNewDeck = ArrayList(deck.cards)
-            toNewDeck.removeAt(0)
-            return Deck(toNewDeck)
-        }
     }
 }

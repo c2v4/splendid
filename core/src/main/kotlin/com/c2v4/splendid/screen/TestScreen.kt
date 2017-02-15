@@ -6,21 +6,21 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.viewport.FitViewport
-import com.c2v4.splendid.core.model.Card
-import com.c2v4.splendid.core.model.Resource
-import com.c2v4.splendid.entity.CardActor
+import com.c2v4.splendid.SplendidGame
+import com.c2v4.splendid.entity.BoardActor
 
-class TestScreen : Screen {
+class TestScreen(val skin: Skin) : Screen {
 
     private var stage: Stage? = null
-    private var skin: Skin? = null
 
     override fun show() {
-        stage = Stage(FitViewport(1024f, 768f))
-        skin = Skin(Gdx.files.internal("ui/skin.json"))
+        stage = Stage(FitViewport(2f*SplendidGame.WIDTH, 2f*SplendidGame.HEIGHT))
 
-        stage!!.addActor(CardActor(Card(1,4,mapOf(Resource.BLACK to 2, Resource.BLUE to 3),Resource.RED), skin!!))
 
+        val boardActor = BoardActor(skin)
+        boardActor.setFillParent(true)
+        stage!!.addActor(boardActor)
+        boardActor.setPosition(0f,0f)
 
         Gdx.input.inputProcessor = stage
     }

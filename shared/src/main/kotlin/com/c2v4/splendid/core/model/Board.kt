@@ -3,8 +3,9 @@ package com.c2v4.splendid.core.model
 import java.util.*
 
 
-class Board(val decks: List<Deck>) {
+class Board(val cardDecks: List<Deck<Card>>, val nobleDeck:Deck<Noble>) {
     val cardsOnBoard: List<MutableList<Card>> = listOf(mutableListOf(), mutableListOf(), mutableListOf())
+    val nobles:MutableList<Noble> = mutableListOf()
 
     companion object {
         val NUMBER_OF_TIERS = 3
@@ -16,11 +17,15 @@ class Board(val decks: List<Deck>) {
         if (tierOnBoard.size > NUMBER_OF_CARDS_PER_TIER - 1) {
             throw IllegalStateException()
         }
-        decks[tier].poll()
+        cardDecks[tier].poll()
         tierOnBoard.add(card)
     }
 
     fun getFirstCard(tier: Int): Optional<Card> {
-        return decks[tier].peek()
+        return cardDecks[tier].peek()
+    }
+
+    fun addNobles(nobles:List<Noble>){
+        this.nobles.addAll(nobles)
     }
 }

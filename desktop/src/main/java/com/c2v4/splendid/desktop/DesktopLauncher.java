@@ -5,11 +5,11 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.c2v4.splendid.SplendidGame;
 
+import static com.c2v4.splendid.SplendidGame.HEIGHT;
+import static com.c2v4.splendid.SplendidGame.WIDTH;
+
 /** Launches the desktop (LWJGL) application. */
 public class DesktopLauncher {
-
-    public static final int WIDTH = 1024;
-    public static final int HEIGHT = 768;
 
     public static void main(String[] args) {
         createApplication();
