@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.c2v4.splendid.SplendidGame
+import com.c2v4.splendid.controller.BoardController
 import com.c2v4.splendid.entity.BoardActor
 
 class TestScreen(val skin: Skin) : Screen {
@@ -47,6 +48,6 @@ class TestScreen(val skin: Skin) : Screen {
 
     override fun dispose() {
         stage!!.dispose()
-        skin!!.dispose()
+        skin.dispose()
     }
 }
