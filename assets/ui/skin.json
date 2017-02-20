@@ -85,12 +85,6 @@
     windowBorder: { name: window-border, color: background },
     alpha: { name: dot, color: semiTransparent },
 
-    gem-black: { name: gem/black, color: font },
-    gem-blue: { name: gem/blue, color: font },
-    gem-red: { name: gem/red, color: font },
-    gem-white: { name: gem/white, color: font },
-    gem-green: { name: gem/green, color: font },
-    gem-gold: { name: gem/gold, color: font },
 
     noble-empty: {name:noble/empty, color:white}
 

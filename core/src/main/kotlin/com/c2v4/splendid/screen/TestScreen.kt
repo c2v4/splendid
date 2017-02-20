@@ -7,22 +7,37 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.c2v4.splendid.SplendidGame
-import com.c2v4.splendid.controller.BoardController
-import com.c2v4.splendid.entity.BoardActor
+import com.c2v4.splendid.cardtable.CardTableModel
+import com.c2v4.splendid.cardtable.CardTableView
+import com.c2v4.splendid.core.model.Card
+import com.c2v4.splendid.core.model.Resource
+import com.c2v4.splendid.entity.BoardView
+import java.util.*
 
 class TestScreen(val skin: Skin) : Screen {
 
     private var stage: Stage? = null
 
     override fun show() {
-        stage = Stage(FitViewport(2f*SplendidGame.WIDTH, 2f*SplendidGame.HEIGHT))
+        stage = Stage(FitViewport(2f * SplendidGame.WIDTH, 2f * SplendidGame.HEIGHT))
 
 
-        val boardActor = BoardActor(skin)
+        val model = CardTableModel.empty()
+        val boardActor = BoardView(skin, CardTableView(skin, model))
         boardActor.setFillParent(true)
         stage!!.addActor(boardActor)
-        boardActor.setPosition(0f,0f)
-
+        boardActor.debugAll()
+        (0..2).forEach { i ->
+            (0..3).forEach {
+                model.changeCard(i,
+                        it,
+                        Card(i,
+                                i+it,
+                                mapOf(Resource.values()[Random().nextInt(
+                                        Resource.values().size)] to Random().nextInt(5)+1),
+                                Resource.values()[i+it]))
+            }
+        }
         Gdx.input.inputProcessor = stage
     }
 

@@ -1,51 +1,31 @@
 package com.c2v4.splendid.entity
 
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.Touchable
-import com.badlogic.gdx.scenes.scene2d.ui.*
-import com.c2v4.splendid.core.model.Board
-import com.c2v4.splendid.core.model.Noble
+import com.badlogic.gdx.scenes.scene2d.ui.Image
+import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
+import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.c2v4.splendid.cardtable.CardTableView
 import com.c2v4.splendid.core.model.Resource
 import com.c2v4.splendid.manager.FontManager
-import com.c2v4.splendid.model.ResourceTableModel
 import ktx.actors.onClick
 
-class BoardActor(skin: Skin) : Table(skin) {
-    val cardHolders: List<MutableList<Cell<Actor>>> = listOf(mutableListOf(), mutableListOf(), mutableListOf())
-    val nobleHolders: MutableList<Cell<Actor>> = mutableListOf()
+class BoardView(skin: Skin, cardTable: CardTableView) : Table(skin) {
 
     init {
-        val cardTable = initializeCardTable(skin)
         defaults().expand()
         add(cardTable)
-        add(ResourceTable(skin, ResourceTableModel()))
-        add(PlayersTable(skin))
-        add(ReservedCardsTable(skin))
-        debugAll()
+//        add(ResourceTable(skin, ResourceTableModel()))
+//        add(PlayersTable(skin))
+//        add(ReservedCardsTable(skin))
+//        debugAll()
         pack()
 
         touchable = Touchable.childrenOnly
     }
 
-    private fun initializeCardTable(skin: Skin): Table {
-        val cardTable = Table()
-        cardTable.defaults().center().pad(5f)
-        cardTable.row().padBottom(25f)
-        (0..Noble.MAX_NOBLES - 1).forEach {
-            nobleHolders.add(cardTable.add(Image(skin, "card-empty")))
-        }
-        (0..Board.NUMBER_OF_TIERS - 1).forEach { i ->
-            cardTable.row()
-            cardTable.add(Image(skin, "card-empty"))
-            (0..Board.NUMBER_OF_CARDS_PER_TIER - 1).forEach {
-                cardHolders[Board.NUMBER_OF_TIERS - i - 1].add(cardTable.add(Image(skin, "card-empty")))
-            }
-        }
-        cardTable.pack()
-        return cardTable
-    }
 
 }
 
