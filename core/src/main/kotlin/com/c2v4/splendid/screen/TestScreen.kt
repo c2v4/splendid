@@ -7,8 +7,15 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.c2v4.splendid.SplendidGame
-import com.c2v4.splendid.cardtable.CardTableModel
-import com.c2v4.splendid.cardtable.CardTableView
+import com.c2v4.splendid.component.CommonModel
+import com.c2v4.splendid.component.cardtable.CardTableController
+import com.c2v4.splendid.component.cardtable.CardTableModel
+import com.c2v4.splendid.component.cardtable.CardTableView
+import com.c2v4.splendid.component.playerstable.playersttate.PlayerStateModel
+import com.c2v4.splendid.component.playerstable.playersttate.PlayerStateView
+import com.c2v4.splendid.component.resourcetable.ResourceTableController
+import com.c2v4.splendid.component.resourcetable.ResourceTableModel
+import com.c2v4.splendid.component.resourcetable.ResourceTableView
 import com.c2v4.splendid.core.model.Card
 import com.c2v4.splendid.core.model.Resource
 import com.c2v4.splendid.entity.BoardView
@@ -21,15 +28,31 @@ class TestScreen(val skin: Skin) : Screen {
     override fun show() {
         stage = Stage(FitViewport(2f * SplendidGame.WIDTH, 2f * SplendidGame.HEIGHT))
 
+        val model = CommonModel.empty()
 
-        val model = CardTableModel.empty()
-        val boardActor = BoardView(skin, CardTableView(skin, model))
+        val cardTableModel = CardTableModel.empty()
+        val cardTableView = CardTableView(skin, cardTableModel)
+        CardTableController(cardTableView, cardTableModel)
+
+        val resourceModel = ResourceTableModel.empty()
+        val resourceView = ResourceTableView(skin, resourceModel)
+        val resourceController = ResourceTableController(resourceView, resourceModel, model)
+
+        val playerStateModel = PlayerStateModel.empty()
+        val playerStateView = PlayerStateView(skin,playerStateModel)
+
+        val boardActor = BoardView(skin, cardTableView, resourceView,playerStateView)
+
+        playerStateModel.setWalletAmount(Resource.RED,4)
+        playerStateModel.setWalletAmount(Resource.BLACK,3)
+        playerStateModel.setCardAmount(Resource.BLACK,2)
+
         boardActor.setFillParent(true)
         stage!!.addActor(boardActor)
         boardActor.debugAll()
         (0..2).forEach { i ->
             (0..3).forEach {
-                model.changeCard(i,
+                cardTableModel.changeCard(i,
                         it,
                         Card(i,
                                 i + it,

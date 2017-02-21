@@ -47,11 +47,5 @@ class CardActor(card: Card, skin: Skin) : Table(skin) {
         debugAll()
         pack()
         touchable = Touchable.enabled
-        addListener(object : ClickListener() {
-            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                super.clicked(event, x, y)
-                println("${card.resource}")
-            }
-        })
     }
 }
