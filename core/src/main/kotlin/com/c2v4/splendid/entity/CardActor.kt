@@ -38,7 +38,7 @@ class CardActor(card: Card, skin: Skin) : Table(skin) {
             val image = Image(skin, "gem/${it.key.name.toLowerCase()}")
             image.setScaling(Scaling.fit)
             val scale = 0.75f
-            resourceTable.add(image).width(image.width * scale).height(image.height * scale)
+            resourceTable.add(image).prefWidth(image.width*scale).prefHeight(image.height*scale)//.width(image.width * scale).height(image.height * scale)
             resourceTable.add("${it.value}", FontManager.UI_FONT, Color.WHITE)
             resourceTable.row()
         }

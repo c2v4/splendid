@@ -32,10 +32,14 @@ class TestScreen(val skin: Skin) : Screen {
                 model.changeCard(i,
                         it,
                         Card(i,
-                                i+it,
+                                i + it,
                                 mapOf(Resource.values()[Random().nextInt(
-                                        Resource.values().size)] to Random().nextInt(5)+1),
-                                Resource.values()[i+it]))
+                                        Resource.values().size)] to Random().nextInt(5) + 1,
+                                        Resource.values()[Random().nextInt(
+                                                Resource.values().size)] to Random().nextInt(5) + 1,
+                                        Resource.values()[Random().nextInt(
+                                                Resource.values().size)] to Random().nextInt(5) + 1),
+                                Resource.values()[i + it]))
             }
         }
         Gdx.input.inputProcessor = stage
