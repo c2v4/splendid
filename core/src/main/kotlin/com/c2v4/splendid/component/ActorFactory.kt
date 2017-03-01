@@ -1,4 +1,4 @@
-package com.c2v4.splendid.component.cardtable
+package com.c2v4.splendid.component
 
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Image

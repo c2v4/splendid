@@ -5,9 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.c2v4.splendid.core.model.Resource
-import com.c2v4.splendid.entity.ClickableResource
 import com.c2v4.splendid.manager.FontManager
-import com.c2v4.splendid.component.resourcetable.ResourceTableModel
 
 class ResourceTableView(skin: Skin, model: ResourceTableModel) : Table(skin) {
     val amounts = Resource.values().map { it to Label("0", skin, FontManager.UI_FONT, Color.WHITE) }.toMap()

@@ -11,8 +11,11 @@ import com.c2v4.splendid.component.CommonModel
 import com.c2v4.splendid.component.cardtable.CardTableController
 import com.c2v4.splendid.component.cardtable.CardTableModel
 import com.c2v4.splendid.component.cardtable.CardTableView
+import com.c2v4.splendid.component.playerstable.PlayerTableModel
+import com.c2v4.splendid.component.playerstable.PlayerTableView
 import com.c2v4.splendid.component.playerstable.playersttate.PlayerStateModel
-import com.c2v4.splendid.component.playerstable.playersttate.PlayerStateView
+import com.c2v4.splendid.component.reservedcard.ReservedCardsModel
+import com.c2v4.splendid.component.reservedcard.ReservedCardsView
 import com.c2v4.splendid.component.resourcetable.ResourceTableController
 import com.c2v4.splendid.component.resourcetable.ResourceTableModel
 import com.c2v4.splendid.component.resourcetable.ResourceTableView
@@ -39,9 +42,12 @@ class TestScreen(val skin: Skin) : Screen {
         val resourceController = ResourceTableController(resourceView, resourceModel, model)
 
         val playerStateModel = PlayerStateModel.empty()
-        val playerStateView = PlayerStateView(skin,playerStateModel)
+        val playerStateModel2 = PlayerStateModel.emptyEnemy("Rysiek")
+        val playerResourceModel = PlayerTableModel(playerStateModel, mutableListOf(playerStateModel2))
+        val reservedCardsModel = ReservedCardsModel.empty()
 
-        val boardActor = BoardView(skin, cardTableView, resourceView,playerStateView)
+        val boardActor = BoardView(skin, cardTableView, resourceView,PlayerTableView(playerResourceModel,skin),
+                ReservedCardsView(reservedCardsModel,skin))
 
         playerStateModel.setWalletAmount(Resource.RED,4)
         playerStateModel.setWalletAmount(Resource.BLACK,3)

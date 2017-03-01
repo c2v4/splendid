@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.c2v4.splendid.core.model.Resource
 import com.c2v4.splendid.manager.FontManager
 
-class PlayerStateView(skin: Skin, val model: PlayerStateModel) : Table(skin) {
+class PlayerStateView(val model: PlayerStateModel, skin: Skin) : Table(skin) {
     val wallet = Resource.values().map {
         it to Label("0",
                 skin,
@@ -29,9 +29,14 @@ class PlayerStateView(skin: Skin, val model: PlayerStateModel) : Table(skin) {
     }.toMap()
     val reservedCards = Label("0", skin, FontManager.UI_FONT, Color.WHITE)
     val walletSum = Label("0", skin, FontManager.UI_FONT, Color.WHITE)
+    val pointLabel = Label("0", skin, FontManager.UI_FONT, Color.WHITE)
 
     init {
         defaults().padLeft(5f).padRight(5f)
+        if (model.displayName) {
+            add(model.name, FontManager.PLAYER_NAME_FONT, Color.WHITE).colspan(Resource.values().size+2)
+            row()
+        }
         add()
         Resource.values().forEach {
             add(Image(skin, "gem/${it.name.toLowerCase()}"))
@@ -60,6 +65,8 @@ class PlayerStateView(skin: Skin, val model: PlayerStateModel) : Table(skin) {
             it.value.setText("${model.wallet.getOrElse(it.key,
                     { 0 }) + model.cards.getOrElse(it.key, { 0 })}")
         }
+        add(pointLabel).padLeft(10f)
+
         model.cardChangeObs.add { resource, amount ->
             cards[resource]!!.setText("$amount")
             sums[resource]!!.setText("${amount + model.wallet.getOrElse(resource, { 0 })}")
@@ -68,8 +75,10 @@ class PlayerStateView(skin: Skin, val model: PlayerStateModel) : Table(skin) {
         model.walletChangeObs.add { resource, amount ->
             wallet[resource]!!.setText("$amount")
             sums[resource]!!.setText("${amount + model.cards.getOrElse(resource, { 0 })}")
-            walletSum.setText("${model.wallet.filterKeys { it!=resource }.values.sum()+amount}")
+            walletSum.setText("${model.wallet.filterKeys { it != resource }.values.sum() + amount}")
         }
+        model.pointsObs.add { amount -> pointLabel.setText("$amount") }
+
         pack()
     }
 

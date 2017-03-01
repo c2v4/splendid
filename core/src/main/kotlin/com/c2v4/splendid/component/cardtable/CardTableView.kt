@@ -23,20 +23,20 @@ class CardTableView(skin: Skin, model: CardTableModel) : Table(skin) {
         defaults().center().pad(5f)
         row().padBottom(25f)
         (0..Noble.MAX_NOBLES - 1).forEach {
-            nobleHolders[it] = add(getNoble(model.nobles[it], skin))
+            nobleHolders[it] = add(com.c2v4.splendid.component.getNoble(model.nobles[it], skin))
         }
         ((Board.NUMBER_OF_TIERS - 1) downTo 0).forEach { i ->
             row()
             add(Image(skin, "card-empty"))
             (0..Board.NUMBER_OF_CARDS_PER_TIER - 1).forEach {
-                val card = getCard(model.cards[i][it], skin)
+                val card = com.c2v4.splendid.component.getCard(model.cards[i][it], skin)
                 card.addListener(getClickListener(it,i))
                 cardHolders[i][it] = add(card)
             }
         }
         model.addCardChangeObserver {
             tier, position, old, new ->
-            val newCardActor = getCard(new, skin)
+            val newCardActor = com.c2v4.splendid.component.getCard(new, skin)
             newCardActor.alpha = 0f
             val fl = 0.5f
             cardHolders[tier][position]!!.actor.addAction(Actions.sequence(Actions.fadeOut(fl),

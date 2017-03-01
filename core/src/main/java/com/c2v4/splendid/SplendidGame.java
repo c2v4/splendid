@@ -24,12 +24,16 @@ public class SplendidGame extends Game {
 
     private Skin initializeSkin() {
         final Skin skin = new Skin(Gdx.files.internal("ui/skin.json"));
-        final FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/comic.ttf"));
+        final FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal(
+                "font/comic.ttf"));
         final FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 48;
         final BitmapFont uiFont = generator.generateFont(parameter);
+        parameter.size = 72;
+        final BitmapFont playerNameFont = generator.generateFont(parameter);
         generator.dispose();
-        skin.add(FontManager.Companion.getUI_FONT(),uiFont);
+        skin.add(FontManager.Companion.getUI_FONT(), uiFont);
+        skin.add(FontManager.Companion.getPLAYER_NAME_FONT(), playerNameFont);
         return skin;
     }
 }
