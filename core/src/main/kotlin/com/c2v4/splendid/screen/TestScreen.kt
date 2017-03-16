@@ -49,10 +49,6 @@ class TestScreen(val skin: Skin) : Screen {
         val boardActor = BoardView(skin, cardTableView, resourceView,PlayerTableView(playerResourceModel,skin),
                 ReservedCardsView(reservedCardsModel,skin))
 
-        playerStateModel.setWalletAmount(Resource.RED,4)
-        playerStateModel.setWalletAmount(Resource.BLACK,3)
-        playerStateModel.setCardAmount(Resource.BLACK,2)
-
         boardActor.setFillParent(true)
         stage!!.addActor(boardActor)
         boardActor.debugAll()

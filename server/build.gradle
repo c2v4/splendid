@@ -6,6 +6,12 @@ eclipse.project.name = appName + '-server'
 
 dependencies {
   compile project(':shared')
+    compile group: 'org.apache.commons', name: 'commons-csv', version: '1.1'
+
+    testCompile 'junit:junit:4.12'
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
+    testCompile "com.nhaarman:mockito-kotlin:1.2.0"
+    testCompile 'org.assertj:assertj-core:3.6.2'
 }
 
 jar {

@@ -9,13 +9,6 @@ class  Deck  <T> private constructor(cards: List<T>) {
         this.cards = ArrayList(cards)
     }
 
-    fun peek(): Optional<T> {
-        if (isEmpty()){
-            return Optional.empty()
-        }else{
-            return Optional.of(cards[0])
-        }
-    }
 
     fun size(): Int {
         return cards.size
