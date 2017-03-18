@@ -11,14 +11,19 @@ class ResourceTableModel(val resourcesAvailable:MutableMap<Resource, Int>,val re
             HashMap(Resource.values().map { it to 0 }.toMap()))
         }
     }
-    var resourceAvailableListeners = mutableListOf<(Int)->Unit>()
-    var resourceSelectedListeners = mutableListOf<(Int)->Unit>()
+    var resourceAvailableListeners = mutableListOf<(Resource,Int)->Unit>()
+    var resourceSelectedListeners = mutableListOf<(Resource,Int)->Unit>()
 
-    fun addResourceAvailableListener(listener:(Int)->Unit){
+    fun addResourceAvailableListener(listener:(Resource,Int)->Unit){
         resourceAvailableListeners.add(listener)
     }
-    fun addResourceSelectedListener(listener:(Int)->Unit){
+    fun addResourceSelectedListener(listener:(Resource,Int)->Unit){
         resourceSelectedListeners.add(listener)
+    }
+
+    fun setResourceAvailable(resources:Map<Resource, Int>){
+        resourcesAvailable.putAll(resources)
+        resourceAvailableListeners.forEach { listener -> resources.forEach { listener.invoke(it.key,it.value) } }
     }
 
 }

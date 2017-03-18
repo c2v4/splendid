@@ -17,7 +17,9 @@ public class Lwjgl3Launcher {
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
         configuration.setTitle("Splendid");
-        configuration.setWindowedMode(SplendidGame.WIDTH, SplendidGame.HEIGHT);
+        configuration.setWindowedMode(SplendidGame.Companion.getWIDTH(),
+                SplendidGame.Companion.getHEIGHT()
+        );
         return configuration;
     }
 }

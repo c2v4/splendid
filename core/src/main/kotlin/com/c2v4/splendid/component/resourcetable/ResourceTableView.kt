@@ -14,8 +14,8 @@ class ResourceTableView(skin: Skin, model: ResourceTableModel) : Table(skin) {
     init {
         defaults().pad(5f)
         Resource.values().forEach {
-            model.addResourceAvailableListener { i -> setAmount(it, i) }
-            model.addResourceSelectedListener { i -> setSelected(it, i) }
+            model.addResourceAvailableListener { it,i -> setAmount(it, i) }
+            model.addResourceSelectedListener { it,i -> setSelected(it, i) }
         }
         amounts.forEach {
             row()

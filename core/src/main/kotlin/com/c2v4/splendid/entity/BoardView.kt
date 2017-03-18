@@ -16,7 +16,6 @@ class BoardView(skin: Skin, cardTable: CardTableView, resourceView: ResourceTabl
         add(resourceView)
         add(playerTableView)
         add(reservedCardsView)
-        debugAll()
         pack()
 
         touchable = Touchable.childrenOnly

@@ -10,7 +10,7 @@ import com.esotericsoftware.kryonet.Connection
 import java.util.*
 
 interface GameService {
-    fun commenceGame(lobby: MutableSet<String>)
+    fun commenceGame(lobby: Set<String>)
 
 }
 
@@ -21,7 +21,7 @@ class SimpleGameService(val associator: ConnectionAssociator,
 
     private val random = Random()
 
-    override fun commenceGame(lobby: MutableSet<String>) {
+    override fun commenceGame(lobby: Set<String>) {
 
         val players = mutableListOf<Player>()
         val playersToConnections = mutableMapOf<Player,Connection>()
@@ -33,6 +33,8 @@ class SimpleGameService(val associator: ConnectionAssociator,
         }
 
         val gameCoordinator = ServerGameCoordinator(playersToConnections)
+
+        gameCoordinator.sendStartGameEvent(lobby)
 
         val availableCoins = initialDataLoader.initialBank(players.size)
         gameCoordinator.sendInitialState(availableCoins)

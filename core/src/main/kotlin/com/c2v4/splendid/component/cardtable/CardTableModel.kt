@@ -28,4 +28,10 @@ val nobleChangeObservers = mutableListOf<(noblePosition:Int, oldNoble: Noble?, n
         cards[tier][position]=newCard
         cardChangeObservers.forEach { it.invoke(tier,position,oldCard,newCard) }
     }
+
+    fun  changeNoble(position: Int, noble: Noble?) {
+        val oldNoble = nobles[position]
+        nobles[position] = noble
+        nobleChangeObservers.forEach { it.invoke(position,oldNoble,noble) }
+    }
 }

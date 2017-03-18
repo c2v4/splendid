@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.c2v4.splendid.component.getNoble
 import com.c2v4.splendid.core.model.Board
 import com.c2v4.splendid.core.model.Noble
 import ktx.actors.alpha
@@ -42,6 +43,9 @@ class CardTableView(skin: Skin, model: CardTableModel) : Table(skin) {
             cardHolders[tier][position]!!.actor.addAction(Actions.sequence(Actions.fadeOut(fl),
                     Actions.run { addActor(newCardActor, position, tier) }))
             newCardActor.addAction(Actions.delay(fl, Actions.fadeIn(fl)))
+        }
+        model.addNobleChangeObserver { noblePosition, oldNoble, newNoble ->
+            nobleHolders[noblePosition]!!.setActor(getNoble(newNoble,skin))
         }
     }
 

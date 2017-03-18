@@ -13,8 +13,8 @@ class SimpleLobbyService(val gameService:GameService):LobbyService{
         val lobby = lobbies.getOrElse(lobbyId,{throw IllegalStateException()})
         if (lobby.size>0){
             lobbies.remove(lobbyId)
+             gameService.commenceGame(lobby)
         }
-        gameService.commenceGame(lobby)
     }
 
 

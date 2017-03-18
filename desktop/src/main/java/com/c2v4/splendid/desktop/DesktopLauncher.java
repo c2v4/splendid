@@ -22,8 +22,8 @@ public class DesktopLauncher {
     private static LwjglApplicationConfiguration getDefaultConfiguration() {
         LwjglApplicationConfiguration configuration = new LwjglApplicationConfiguration();
         configuration.title = "Splendid";
-        configuration.width = WIDTH;
-        configuration.height = HEIGHT;
+        configuration.width = Companion.getWIDTH();
+        configuration.height = Companion.getHEIGHT();
         for (int size : new int[] { 128, 64, 32, 16 }) {
             configuration.addIcon("libgdx" + size + ".png", FileType.Internal);
         }

@@ -7,6 +7,7 @@ import com.c2v4.splendid.network.message.game.*
 import com.c2v4.splendid.network.message.login.JoinLobby
 import com.c2v4.splendid.network.message.login.LoggedIn
 import com.c2v4.splendid.network.message.login.SimpleLogIn
+import com.c2v4.splendid.network.message.login.StartGame
 import com.esotericsoftware.kryo.Kryo
 import com.esotericsoftware.kryonet.Client
 import com.esotericsoftware.kryonet.Connection
@@ -16,6 +17,8 @@ import kotlin.concurrent.thread
 
 private val CLASSES_TO_REGISTER = listOf(SimpleLogIn::class.java,
         LoggedIn::class.java,
+        StartGame::class.java,
+        LinkedHashSet::class.java,
         Resource::class.java,
         TakeCoins::class.java,
         HashMap::class.java,
