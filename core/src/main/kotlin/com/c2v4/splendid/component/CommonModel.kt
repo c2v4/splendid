@@ -12,10 +12,16 @@ class CommonModel(var playerEvent: PlayerEvent,
                   val resourceModel: ResourceTableModel,
                   val playerTableModel: PlayerTableModel,
                   val reservedCardsModel: ReservedCardsModel) {
+
+    private val turnListeners = mutableListOf<(playerTurn:Boolean)->Unit>()
+
+    private var playerTurn = false
+
     companion object {
         fun empty(cardTableModel: CardTableModel = CardTableModel.empty(),
                   resourceModel: ResourceTableModel = ResourceTableModel.empty(),
-                  playerTableModel: PlayerTableModel = PlayerTableModel(PlayerStateModel.empty(), mutableListOf(PlayerStateModel.empty())),
+                  playerTableModel: PlayerTableModel = PlayerTableModel(PlayerStateModel.empty(),
+                          mutableListOf(PlayerStateModel.empty())),
                   reservedCardsModel: ReservedCardsModel = ReservedCardsModel.empty()): CommonModel {
             return CommonModel(PlayerEvent.NONE,
                     cardTableModel,
@@ -23,5 +29,13 @@ class CommonModel(var playerEvent: PlayerEvent,
                     playerTableModel,
                     reservedCardsModel)
         }
+    }
+    fun setPlayerTurn(playerTurn:Boolean){
+        this. playerTurn =playerTurn
+        turnListeners.forEach { it.invoke(playerTurn) }
+    }
+
+    fun addTurnListener(listener: (isPlayerTurn:Boolean) -> Unit) {
+        turnListeners.add(listener)
     }
 }

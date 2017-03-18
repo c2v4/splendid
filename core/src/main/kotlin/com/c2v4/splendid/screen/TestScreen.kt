@@ -20,7 +20,7 @@ class TestScreen : Screen {
     fun addMainActor(boardActor: Table){
         boardActor.setFillParent(true)
         stage!!.addActor(boardActor)
-        boardActor.debugAll()
+//        boardActor.debugAll()
     }
     override fun pause() {
     }

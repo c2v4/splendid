@@ -75,4 +75,8 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
         model.cardTableModel.changeNoble(received.position,received.noble)
     }
 
+    fun setPlayerTurn(playerTurn:Boolean) {
+        model.playerTurn = playerTurn
+    }
+
 }

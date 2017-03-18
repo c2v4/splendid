@@ -21,8 +21,8 @@ class CardTableView(skin: Skin, model: CardTableModel) : Table(skin) {
     val controllers = mutableListOf<CardTableController>()
 
     init {
-        defaults().center().pad(5f)
-        row().padBottom(25f)
+        defaults().center().pad(2f)
+        row().padBottom(15f)
         (0..Noble.MAX_NOBLES - 1).forEach {
             nobleHolders[it] = add(com.c2v4.splendid.component.getNoble(model.nobles[it], skin))
         }
