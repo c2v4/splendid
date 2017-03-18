@@ -3,16 +3,15 @@ eclipse.project.name = appName + '-shared'
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile "kryonet:kryonet:2.21"
-    compile group: 'com.esotericsoftware', name: 'kryo', version: '4.0.0'
+    compile group: 'kryonet', name: 'kryonet-all', version: '2.21'
     compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.24'
-    compile 'com.google.guava:guava:21.0'
     testCompile 'junit:junit:4.12'
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
     testCompile "com.nhaarman:mockito-kotlin:1.2.0"
     testCompile 'org.assertj:assertj-core:3.6.2'
 
 }
+
 buildscript {
     ext.kotlin_version = '1.0.6'
     repositories {
