@@ -85,9 +85,10 @@ class ResourceTableController(val resourceTable: ResourceTableView,
     }
 
     private fun checkActionCorrect() {
-        if (isDrawCorrect(clickedTableResources, clickedPlayerResources, playerStateModel.wallet)) {
-            commonModel.setActionCorrect(true)
-        }
+        commonModel.setActionCorrect(isDrawCorrect(clickedTableResources,
+                clickedPlayerResources,
+                playerStateModel.wallet))
+
     }
 
     private fun resetPlayerResources() {
@@ -112,7 +113,7 @@ class ResourceTableController(val resourceTable: ResourceTableView,
                         setPlayerResource(resource,
                                 clickedPlayerResources.getOrDefault(resource, 0) + 1)
                     } else {
-                        setPlayerResource(resource,0)
+                        setPlayerResource(resource, 0)
                     }
                 } else {
                     if (stillToReturn > 0) {
