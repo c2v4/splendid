@@ -11,7 +11,7 @@ class SimpleLobbyService(val gameService:GameService):LobbyService{
 
     private fun checkFull(lobbyId: Int) {
         val lobby = lobbies.getOrElse(lobbyId,{throw IllegalStateException()})
-        if (lobby.size>0){
+        if (lobby.size>1){
             lobbies.remove(lobbyId)
              gameService.commenceGame(lobby)
         }

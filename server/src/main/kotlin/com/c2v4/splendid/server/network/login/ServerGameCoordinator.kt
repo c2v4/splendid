@@ -5,14 +5,13 @@ import com.c2v4.splendid.core.model.Noble
 import com.c2v4.splendid.core.model.Player
 import com.c2v4.splendid.core.model.Resource
 import com.c2v4.splendid.gateway.GameCoordinator
-import com.c2v4.splendid.network.message.game.CardDeal
-import com.c2v4.splendid.network.message.game.InitialCoins
-import com.c2v4.splendid.network.message.game.NobleDeal
-import com.c2v4.splendid.network.message.game.YourTurn
+import com.c2v4.splendid.network.message.game.*
 import com.c2v4.splendid.network.message.login.StartGame
+import com.c2v4.splendid.server.network.ConnectionAssociator
 import com.esotericsoftware.kryonet.Connection
 
-class ServerGameCoordinator(val playersToConnections: MutableMap<Player, Connection>) : GameCoordinator {
+class ServerGameCoordinator(val playersToConnections: MutableMap<Player, Connection>,
+                            val associator: ConnectionAssociator) : GameCoordinator {
     override fun sendStartGameEvent(lobby: Set<String>) {
         sendToEveryone(StartGame(lobby))
     }
@@ -26,8 +25,10 @@ class ServerGameCoordinator(val playersToConnections: MutableMap<Player, Connect
         sendToEveryone(NobleDeal(position, noble))
     }
 
-    override fun coinsTaken(player: Player, taken: Map<Resource, Int>) {
-
+    override fun coinsTaken(player: Player,
+                            taken: Map<Resource, Int>,
+                            boardsCoinsAvailable: Map<Resource, Int>) {
+        sendToEveryone(CoinsTaken(associator.getPlayerName(player), taken, boardsCoinsAvailable))
     }
 
     override fun setCurrentPlayer(currentPlayer: Player) {

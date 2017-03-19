@@ -79,4 +79,19 @@ class CostUtilityTest {
         assertThat(mapOf<Resource,Int>().haveValues(mapOf())).isTrue()
         assertThat(mapOf<Resource,Int>().haveValues(mapOf(RED to 1))).isFalse()
     }
+
+    @Test
+    fun mapSubtractTest() {
+        assertThat(mapOf(RED to 2).subtract(mapOf(RED to 1))).containsAllEntriesOf(mapOf(RED to 1))
+        assertThat(mapOf(RED to 2,
+                BLUE to 2).subtract(mapOf(RED to 1))).containsAllEntriesOf(mapOf(RED to 1,
+                BLUE to 2))
+        assertThat(mapOf(RED to 1,
+                BLUE to 2).subtract(mapOf(BLUE to 2))).containsAllEntriesOf(mapOf(RED to 1))
+        assertThat(mapOf(RED to 1,
+                BLUE to 2).subtract(mapOf(BLUE to 3))).containsAllEntriesOf(mapOf(RED to 1,BLUE to -1))
+        assertThat(mapOf(BLUE to 2).subtract(mapOf(BLUE to 2))).isEmpty()
+        assertThat(mapOf(BLUE to 2).subtract(mapOf(RED to 1))).containsAllEntriesOf(mapOf(BLUE to 2,RED to -1))
+        assertThat(mapOf(BLUE to 2).subtract(mapOf(BLUE to 3))).containsAllEntriesOf(mapOf(BLUE to -1))
+    }
 }

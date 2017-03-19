@@ -22,8 +22,12 @@ class ResourceTableModel(val resourcesAvailable:MutableMap<Resource, Int>) {
     }
 
     fun setResourceAvailable(resources:Map<Resource, Int>){
+        Resource.values().forEach { resource ->
+            val value = resources.getOrDefault(resource, 0)
+            resourcesAvailable[resource] = value
+        resourceAvailableListeners.forEach { listener ->  listener.invoke(resource,value)  }
+        }
         resourcesAvailable.putAll(resources)
-        resourceAvailableListeners.forEach { listener -> resources.forEach { listener.invoke(it.key,it.value) } }
     }
 
 }

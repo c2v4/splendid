@@ -2,6 +2,7 @@ package com.c2v4.splendid
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.c2v4.splendid.component.CommonModel
+import com.c2v4.splendid.component.PlayerEvent
 import com.c2v4.splendid.component.cardtable.CardTableController
 import com.c2v4.splendid.component.cardtable.CardTableModel
 import com.c2v4.splendid.component.cardtable.CardTableView
@@ -15,13 +16,24 @@ import com.c2v4.splendid.component.resourcetable.ResourceTableModel
 import com.c2v4.splendid.component.resourcetable.ResourceTableView
 import com.c2v4.splendid.entity.BoardView
 import com.c2v4.splendid.network.message.game.CardDeal
+import com.c2v4.splendid.network.message.game.CoinsTaken
 import com.c2v4.splendid.network.message.game.InitialCoins
 import com.c2v4.splendid.network.message.game.NobleDeal
 import com.c2v4.splendid.screen.TestScreen
+import com.esotericsoftware.kryonet.Client
 
 class ClientController(val name: String, val skin: Skin, val splendidGame: SplendidGame) {
 
     var model: CommonModel = CommonModel.empty()
+    private var  client: Client = object :Client(){
+        override fun sendUDP(p0: Any?): Int {
+            throw IllegalStateException()
+        }
+
+        override fun sendTCP(p0: Any?): Int {
+            throw IllegalStateException()
+        }
+    }
 
     var gameStarted = false
     fun startGame(players: Set<String>) {
@@ -40,7 +52,7 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
         players.filter { it != name }.forEach {
             enemies.add(PlayerStateModel.emptyEnemy(it))
         }
-        val playerTableModel = PlayerTableModel(playerStateModel, enemies)
+        val playerTableModel = PlayerTableModel(name,playerStateModel, enemies)
         val reservedCardsModel = ReservedCardsModel.empty()
         model = CommonModel.empty(cardTableModel,
                 resourceModel,
@@ -52,7 +64,11 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
 
         val playerTableView = PlayerTableView(playerTableModel, skin)
         val resourceView = ResourceTableView(skin, resourceModel)
-        val resourceController = ResourceTableController(resourceView, playerTableView.playerStateView, resourceModel, model)
+        val resourceController = ResourceTableController(resourceView,
+                playerTableView.playerStateView,
+                playerStateModel,
+                resourceModel,
+                model)
 
 
         val boardActor = BoardView(skin,
@@ -61,6 +77,20 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
                 playerTableView,
                 ReservedCardsView(reservedCardsModel, skin),
                 model)
+        boardActor.onButtonClick { inputEvent, button ->
+            println("GO")
+            if (model.getPlayerTurn() && model.getActionCorrect()) {
+                model.setPlayerTurn(false)
+                model.setActionCorrect(false)
+                when(model.playerEvent){
+                    PlayerEvent.GET_COINS ->{
+                        client.sendTCP(resourceController.getEvent())
+                    }
+                }
+            } else {
+                throw IllegalStateException()
+            }
+        }
         val screen = splendidGame.screen as TestScreen
         screen.addMainActor(boardActor)
     }
@@ -80,5 +110,19 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
     fun setPlayerTurn(playerTurn: Boolean) {
         model.setPlayerTurn(playerTurn)
     }
+
+
+    fun setClient(client: Client) {
+        this.client = client
+    }
+
+    fun coinsTaken(received: CoinsTaken) {
+        model.resourceModel.setResourceAvailable(received.boardsCoinsAvailable)
+        val modelForPlayer = model.playerTableModel.getModelForPlayer(received.player)
+        received.balance.forEach {
+            modelForPlayer.setWalletAmount(it.key,modelForPlayer.wallet.getOrDefault(it.key,0)+it.value)
+        }
+    }
+
 
 }

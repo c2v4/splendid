@@ -1,8 +1,10 @@
 package com.c2v4.splendid.server.network
 
+import com.c2v4.splendid.network.message.game.TakeCoins
 import com.c2v4.splendid.network.message.login.JoinLobby
 import com.c2v4.splendid.network.message.login.LoggedIn
 import com.c2v4.splendid.network.message.login.SimpleLogIn
+import com.c2v4.splendid.server.network.login.GameService
 import com.c2v4.splendid.server.network.login.LobbyService
 import com.c2v4.splendid.server.network.login.LogInService
 import com.esotericsoftware.kryonet.Connection
@@ -11,7 +13,8 @@ import org.slf4j.LoggerFactory
 
 class ServerListener(val associator: ConnectionAssociator,
                      val logInService: LogInService,
-                     val lobbyService: LobbyService) : Listener() {
+                     val lobbyService: LobbyService,
+                     val gameService: GameService) : Listener() {
     companion object {
         val LOGGER = LoggerFactory.getLogger(ServerListener::class.java)!!
     }
@@ -37,10 +40,13 @@ class ServerListener(val associator: ConnectionAssociator,
                 }
                 is JoinLobby -> {
                     if (associator.isPlayerLogged(connection)) {
-                        lobbyService.join(associator.getPlayer(connection), received.lobbyId)
+                        lobbyService.join(associator.getPlayerName(connection), received.lobbyId)
                     } else {
                         throw IllegalStateException()
                     }
+                }
+                is TakeCoins -> {
+                    gameService.takeCoins(connection,received)
                 }
             }
             return Unit

@@ -3,6 +3,7 @@ package com.c2v4.splendid.component.playerstable.playersttate
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.*
+import com.c2v4.splendid.component.resourcetable.ClickableResource
 import com.c2v4.splendid.core.model.Resource
 import com.c2v4.splendid.manager.FontManager
 import ktx.actors.onClick
@@ -29,7 +30,7 @@ class PlayerStateView(val model: PlayerStateModel, skin: Skin) : Table(skin) {
     val reservedCards = Label("0", skin, FontManager.UI_FONT, Color.WHITE)
     val walletSum = Label("0", skin, FontManager.UI_FONT, Color.WHITE)
     val pointLabel = Label("0", skin, FontManager.UI_FONT, Color.WHITE)
-    val gems = Resource.values().map { it to Image(skin, "gem/${it.name.toLowerCase()}") }.toMap()
+    val gems = Resource.values().map { it to ClickableResource(skin, it) }.toMap()
 
     init {
         defaults().padLeft(5f).padRight(5f)
@@ -82,7 +83,7 @@ class PlayerStateView(val model: PlayerStateModel, skin: Skin) : Table(skin) {
         pack()
     }
 
-    fun onClick(resource: Resource,listener: (InputEvent, Widget) -> Unit){
+    fun onClick(resource: Resource,listener: (InputEvent, ClickableResource) -> Unit){
         println("Listenet added: "+resource)
         gems[resource]!!.onClick(listener)
     }

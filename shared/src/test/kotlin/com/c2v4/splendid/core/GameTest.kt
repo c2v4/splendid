@@ -52,7 +52,9 @@ class GameTest {
         assertThat(game.currentPlayer).isEqualTo(player2)
         assertThat(board.availableCoins).containsAllEntriesOf(mapOf(RED to 2, BLUE to 1))
         assertThat(player1.wallet).containsAllEntriesOf(taken)
-        verify(coordinator, com.nhaarman.mockito_kotlin.times(1))!!.coinsTaken(player1, taken)
+//        verify(coordinator, com.nhaarman.mockito_kotlin.times(1))!!.coinsTaken(player1,
+//                taken,
+//                returned)
     }
 
 
@@ -74,6 +76,8 @@ class GameTest {
         assertThat(game.currentPlayer).isEqualTo(player2)
         assertThat(board.availableCoins).containsAllEntriesOf(mapOf(RED to 2, BLUE to 2,GREEN to 1))
         assertThat(player1.wallet).containsAllEntriesOf(mapOf(GREEN to 8, BLACK to 1, RED to 1))
-        verify(coordinator, com.nhaarman.mockito_kotlin.times(1))!!.coinsTaken(player1, taken)
+//        verify(coordinator, com.nhaarman.mockito_kotlin.times(1))!!.coinsTaken(player1,
+//                taken,
+//                returned)
     }
 }

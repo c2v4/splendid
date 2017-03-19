@@ -18,9 +18,10 @@ object ServerLauncher {
     @JvmStatic fun main(args: Array<String>) {
         BasicConfigurator.configure()
         val associator = ConnectionAssociator()
+        val gameService = SimpleGameService(associator,
+                InitialDataLoader())
         MainServer(4, listOf(LoggingListener(), ServerListener(associator,
                 ChallengeLogInService(SecureRandom()),
-                SimpleLobbyService(SimpleGameService(associator,
-                        InitialDataLoader())))))
+                SimpleLobbyService(gameService),gameService)))
     }
 }

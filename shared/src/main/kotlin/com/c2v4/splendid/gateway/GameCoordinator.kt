@@ -8,7 +8,8 @@ import com.c2v4.splendid.core.model.Resource
 interface GameCoordinator {
     fun setCurrentPlayer(currentPlayer: Player)
     fun coinsTaken(player: Player,
-                   taken: Map<Resource, Int>)
+                   taken: Map<Resource, Int>,
+                   boardsCoinsAvailable: Map<Resource, Int>)
 
     fun cardDealt(tier: Int, position: Int, card: Card)
     fun nobleDealt(position: Int, noble: Noble)

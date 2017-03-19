@@ -16,7 +16,7 @@ class SplendidGame : Game() {
     override fun create() {
         setScreen(TestScreen())
         val skin = initializeSkin()
-        val name = UUID.randomUUID().toString()
+        val name = UUID.randomUUID().toString().substring(0..10)
         val networkAdapter = NetworkAdapter(ClientListener(ClientController(name, skin, this)))
         networkAdapter.send(SimpleLogIn(name))
         networkAdapter.send(JoinLobby(1))

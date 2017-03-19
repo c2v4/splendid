@@ -14,6 +14,7 @@ class NetworkAdapter(commenceListener: ClientListener, val address: String = "lo
     init {
         registerClasses(client.kryo)
         connect()
+        commenceListener.setClient(client)
         addListener(commenceListener)
     }
 

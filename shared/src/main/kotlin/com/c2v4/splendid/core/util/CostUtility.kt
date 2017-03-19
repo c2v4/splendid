@@ -57,6 +57,19 @@ fun <T> Map<T, Int>.subtractPositive(map: Map<T, Int>): Map<T, Int> {
     return toReturn
 }
 
+fun <T> Map<T, Int>.subtract(map: Map<T, Int>): Map<T, Int> {
+    val toReturn = HashMap(this)
+    map.forEach {
+        val newValue = getOrElse(it.key, {0}) - it.value
+        if (newValue == 0) {
+            toReturn.remove(it.key)
+        }else{
+            toReturn[it.key] = newValue
+        }
+    }
+    return toReturn
+}
+
 fun <T> Map<T, Int>.haveValues(values: Map<T, Int>): Boolean {
     return values.all { getOrElse(it.key, { 0 }) - it.value >= 0 }
 }

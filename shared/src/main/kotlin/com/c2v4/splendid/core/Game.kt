@@ -3,10 +3,7 @@ package com.c2v4.splendid.core
 import com.c2v4.splendid.core.model.Board
 import com.c2v4.splendid.core.model.Player
 import com.c2v4.splendid.core.model.Resource
-import com.c2v4.splendid.core.util.haveValues
-import com.c2v4.splendid.core.util.isDrawCorrect
-import com.c2v4.splendid.core.util.merge
-import com.c2v4.splendid.core.util.subtractPositive
+import com.c2v4.splendid.core.util.*
 import com.c2v4.splendid.gateway.GameCoordinator
 import java.util.*
 
@@ -40,7 +37,7 @@ class Game(players: List<Player>,
                 { 0 }) > 3)) {
             player.wallet = player.wallet.merge(taken).subtractPositive(returned)
             board.availableCoins = board.availableCoins.merge(returned).subtractPositive(taken)
-            gameCoordinator.coinsTaken(player, taken)
+            gameCoordinator.coinsTaken(player, taken.subtract(returned),board.availableCoins)
             setNextCurrentPlayer()
         } else {
             throw IllegalArgumentException()
@@ -48,7 +45,7 @@ class Game(players: List<Player>,
     }
 
     private fun setNextCurrentPlayer() {
-        currentPlayer = players[(players.indexOf(currentPlayer) + 1) % players.size]
+        setCurrentPlayer((players.indexOf(currentPlayer) + 1) % players.size)
     }
 
     private fun isCurrentPlayer(player: Player): Boolean = player == currentPlayer

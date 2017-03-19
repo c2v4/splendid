@@ -11,16 +11,16 @@ data class TakeCoins(val taken: HashMap<Resource, Int> = HashMap(),
 //class TakeCoinsSerializer : Serializer<TakeCoins>() {
 //
 //    override fun read(kryo: Kryo, input: Input, type: Class<TakeCoins>): TakeCoins {
-//        val taken = mutableMapOf<Resource,Int>()
+//        val balance = mutableMapOf<Resource,Int>()
 //        val returned = mutableMapOf<Resource,Int>()
-//        (0..input.readInt()).forEach { taken.put(Resource.values()[input.readInt()],input.readInt()) }
+//        (0..input.readInt()).forEach { balance.put(Resource.values()[input.readInt()],input.readInt()) }
 //        (0..input.readInt()).forEach { returned.put(Resource.values()[input.readInt()],input.readInt()) }
-//        return TakeCoins(taken,returned)
+//        return TakeCoins(balance,returned)
 //    }
 //
 //    override fun write(kryo: Kryo, output: Output, takeCoins: TakeCoins) {
-//        output.writeInt(takeCoins.taken.size)
-//        takeCoins.taken.forEach { output.writeInt(it.key.ordinal)
+//        output.writeInt(takeCoins.balance.size)
+//        takeCoins.balance.forEach { output.writeInt(it.key.ordinal)
 //        output.writeInt(it.value)}
 //        output.writeInt(takeCoins.returned.size)
 //        takeCoins.returned.forEach { output.writeInt(it.key.ordinal)
