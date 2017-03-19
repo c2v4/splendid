@@ -24,7 +24,7 @@ class LoggingListener : Listener() {
 
     override fun received(connection: Connection?, `object`: Any?) {
         if (`object` !is FrameworkMessage) {
-            LOGGER.info("Received: {} form {}", `object`, connection)
+            LOGGER.info("Received: {} from {}", `object`, connection)
         }
     }
 }

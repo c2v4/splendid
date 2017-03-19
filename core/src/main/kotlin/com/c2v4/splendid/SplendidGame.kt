@@ -37,7 +37,6 @@ class SplendidGame : Game() {
     }
 
     companion object {
-
         val WIDTH = 1366
         val HEIGHT = 768
     }

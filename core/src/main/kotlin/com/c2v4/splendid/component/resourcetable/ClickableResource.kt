@@ -22,10 +22,17 @@ class ClickableResource(skin: Skin, val resource: Resource) : Table(skin) {
     }
 
     fun setOnClick(listener: (InputEvent, ClickableResource) -> Unit) {
-        onClick(listener)
+        onClick{ i:InputEvent, c:ClickableResource ->
+            println("Clicked: "+resource)
+            listener.invoke(i,c) }
     }
 
-    fun setChosenAmount(i: Int) {
-        label.setText("$i")
+    fun setChosenAmount(i: Int,color: Color= Color.WHITE) {
+        if(i==0){
+            label.setText("")
+        }else{
+            label.setText("$i")
+        }
+        label.color = color
     }
 }

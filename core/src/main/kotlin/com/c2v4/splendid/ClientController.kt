@@ -50,15 +50,17 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
         val cardTableView = CardTableView(skin, cardTableModel)
         CardTableController(cardTableView, cardTableModel)
 
+        val playerTableView = PlayerTableView(playerTableModel, skin)
         val resourceView = ResourceTableView(skin, resourceModel)
-        val resourceController = ResourceTableController(resourceView, resourceModel, model)
+        val resourceController = ResourceTableController(resourceView, playerTableView.playerStateView, resourceModel, model)
 
 
         val boardActor = BoardView(skin,
                 cardTableView,
                 resourceView,
-                PlayerTableView(playerTableModel, skin),
-                ReservedCardsView(reservedCardsModel, skin))
+                playerTableView,
+                ReservedCardsView(reservedCardsModel, skin),
+                model)
         val screen = splendidGame.screen as TestScreen
         screen.addMainActor(boardActor)
     }
@@ -68,15 +70,15 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
     }
 
     fun cardDeal(received: CardDeal) {
-        model.cardTableModel.changeCard(received.tier,received.position,received.card)
+        model.cardTableModel.changeCard(received.tier, received.position, received.card)
     }
 
     fun nobleDeal(received: NobleDeal) {
-        model.cardTableModel.changeNoble(received.position,received.noble)
+        model.cardTableModel.changeNoble(received.position, received.noble)
     }
 
-    fun setPlayerTurn(playerTurn:Boolean) {
-        model.playerTurn = playerTurn
+    fun setPlayerTurn(playerTurn: Boolean) {
+        model.setPlayerTurn(playerTurn)
     }
 
 }

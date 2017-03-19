@@ -10,10 +10,9 @@ import com.c2v4.splendid.SplendidGame
 
 class TestScreen : Screen {
 
-    private var stage: Stage? = null
+    private var stage: Stage = Stage(FitViewport(2f * SplendidGame.WIDTH, 2f * SplendidGame.HEIGHT))
 
     override fun show() {
-        stage = Stage(FitViewport(2f * SplendidGame.WIDTH, 2f * SplendidGame.HEIGHT))
         Gdx.input.inputProcessor = stage
     }
 

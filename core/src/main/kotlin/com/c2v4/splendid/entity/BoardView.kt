@@ -24,13 +24,14 @@ class BoardView(skin: Skin,
         add(reservedCardsView)
         pack()
         model.addTurnListener({ isPlayerTurn ->
+            println(isPlayerTurn)
             if (isPlayerTurn) {
                 touchable = Touchable.childrenOnly
             } else {
                 touchable = Touchable.disabled
             }
         })
-        touchable = Touchable.disabled
+        touchable = Touchable.childrenOnly
     }
 
 

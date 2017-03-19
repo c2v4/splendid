@@ -1,12 +1,11 @@
 package com.c2v4.splendid.component.playerstable.playersttate
 
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.scenes.scene2d.ui.Table
+import com.badlogic.gdx.scenes.scene2d.InputEvent
+import com.badlogic.gdx.scenes.scene2d.ui.*
 import com.c2v4.splendid.core.model.Resource
 import com.c2v4.splendid.manager.FontManager
+import ktx.actors.onClick
 
 class PlayerStateView(val model: PlayerStateModel, skin: Skin) : Table(skin) {
     val wallet = Resource.values().map {
@@ -30,6 +29,7 @@ class PlayerStateView(val model: PlayerStateModel, skin: Skin) : Table(skin) {
     val reservedCards = Label("0", skin, FontManager.UI_FONT, Color.WHITE)
     val walletSum = Label("0", skin, FontManager.UI_FONT, Color.WHITE)
     val pointLabel = Label("0", skin, FontManager.UI_FONT, Color.WHITE)
+    val gems = Resource.values().map { it to Image(skin, "gem/${it.name.toLowerCase()}") }.toMap()
 
     init {
         defaults().padLeft(5f).padRight(5f)
@@ -39,7 +39,7 @@ class PlayerStateView(val model: PlayerStateModel, skin: Skin) : Table(skin) {
         }
         add()
         Resource.values().forEach {
-            add(Image(skin, "gem/${it.name.toLowerCase()}"))
+            add(gems[it])
         }
         row()
         add(Image(skin, "gem/red"))
@@ -80,6 +80,11 @@ class PlayerStateView(val model: PlayerStateModel, skin: Skin) : Table(skin) {
         model.pointsObs.add { amount -> pointLabel.setText("$amount") }
 
         pack()
+    }
+
+    fun onClick(resource: Resource,listener: (InputEvent, Widget) -> Unit){
+        println("Listenet added: "+resource)
+        gems[resource]!!.onClick(listener)
     }
 
 }

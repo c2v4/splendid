@@ -9,7 +9,7 @@ import java.util.concurrent.ThreadFactory
 class NetworkAdapter(commenceListener: ClientListener, val address: String = "localhost") {
 
     val client = Client()
-    val threadPool = Executors.newFixedThreadPool(2,DaemonFactory())
+    val threadPool = Executors.newFixedThreadPool(1,DaemonFactory())
 
     init {
         registerClasses(client.kryo)
