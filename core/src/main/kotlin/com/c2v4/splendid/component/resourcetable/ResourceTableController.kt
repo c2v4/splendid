@@ -105,11 +105,13 @@ class ResourceTableController(val resourceTable: ResourceTableView,
 
     fun onClickPlayer(resource: Resource) {
         if (isTakenCorrect(clickedTableResources)) {
-            val amountToReturn = clickedTableResources.merge(playerStateModel.wallet).values.sum() - 10
+            val merged = clickedTableResources.merge(playerStateModel.wallet)
+            val amountToReturn = merged.values.sum() - 10
             if (amountToReturn > 0) {
                 val stillToReturn = amountToReturn - clickedPlayerResources.values.sum()
                 if (clickedPlayerResources.containsKey(resource)) {
-                    if (stillToReturn > 0) {
+                    if (stillToReturn > 0 && merged.getOrDefault(resource,
+                            0) >= (clickedPlayerResources.getOrDefault(resource, 0) + 1)) {
                         setPlayerResource(resource,
                                 clickedPlayerResources.getOrDefault(resource, 0) + 1)
                     } else {
