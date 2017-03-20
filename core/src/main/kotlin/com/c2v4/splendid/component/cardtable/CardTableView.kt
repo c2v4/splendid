@@ -11,7 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.c2v4.splendid.component.getNoble
 import com.c2v4.splendid.core.model.Board
 import com.c2v4.splendid.core.model.Noble
+import com.c2v4.splendid.entity.CardActor
 import ktx.actors.alpha
+import ktx.actors.onClick
 
 class CardTableView(skin: Skin, model: CardTableModel) : Table(skin) {
     val cardHolders: Array<Array<Cell<Actor>?>> = arrayOf(arrayOfNulls(4),
@@ -30,9 +32,12 @@ class CardTableView(skin: Skin, model: CardTableModel) : Table(skin) {
             row()
             add(Image(skin, "card-empty"))
             (0..Board.NUMBER_OF_CARDS_PER_TIER - 1).forEach {
-                val card = com.c2v4.splendid.component.getCard(model.cards[i][it], skin)
-                card.addListener(getClickListener(it,i))
-                cardHolders[i][it] = add(card)
+                val card = model.cards[i][it]
+                val cardActor = com.c2v4.splendid.component.getCard(card, skin)
+                if (card != null) {
+                    cardActor.addListener(getClickListener(it, i,cardActor))
+                }
+                cardHolders[i][it] = add(cardActor)
             }
         }
         model.addCardChangeObserver {
@@ -45,20 +50,38 @@ class CardTableView(skin: Skin, model: CardTableModel) : Table(skin) {
             newCardActor.addAction(Actions.delay(fl, Actions.fadeIn(fl)))
         }
         model.addNobleChangeObserver { noblePosition, oldNoble, newNoble ->
-            nobleHolders[noblePosition]!!.setActor(getNoble(newNoble,skin))
+            nobleHolders[noblePosition]!!.setActor(getNoble(newNoble, skin))
         }
     }
 
     private fun addActor(newCardActor: Actor, position: Int, tier: Int) {
         cardHolders[tier][position]!!.setActor(newCardActor)
-        newCardActor.addListener(getClickListener(position,tier))
+        if (newCardActor is CardActor) {
+            newCardActor.addListener(getClickListener(position, tier,newCardActor))
+
+            newCardActor.onClick { inputEvent, actor ->
+                controllers.forEach {
+                    it.click(position,tier,actor)
+                }
+            }
+        }
     }
 
-    private fun getClickListener(position: Int, tier: Int): ClickListener {
+    private fun getClickListener(position: Int, tier: Int,card:Actor): ClickListener {
         return object : ClickListener() {
-            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                super.clicked(event, x, y)
-                controllers.forEach { it.clickedCard(tier,position) }
+
+            override fun enter(event: InputEvent?, x: Float, y: Float, pointer: Int, fromActor: Actor?) {
+                super.enter(event, x, y, pointer, fromActor)
+                if(card is CardActor){
+                    card.showButtons()
+                }
+            }
+
+            override fun exit(event: InputEvent?, x: Float, y: Float, pointer: Int, toActor: Actor?) {
+                super.exit(event, x, y, pointer, toActor)
+                if(card is CardActor){
+                    card.hideButtons()
+                }
             }
         }
     }

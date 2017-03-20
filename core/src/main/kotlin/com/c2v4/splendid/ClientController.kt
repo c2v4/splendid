@@ -14,6 +14,7 @@ import com.c2v4.splendid.component.reservedcard.ReservedCardsView
 import com.c2v4.splendid.component.resourcetable.ResourceTableController
 import com.c2v4.splendid.component.resourcetable.ResourceTableModel
 import com.c2v4.splendid.component.resourcetable.ResourceTableView
+import com.c2v4.splendid.core.model.Player
 import com.c2v4.splendid.entity.BoardView
 import com.c2v4.splendid.network.message.game.CardDeal
 import com.c2v4.splendid.network.message.game.CoinsTaken
@@ -25,7 +26,7 @@ import com.esotericsoftware.kryonet.Client
 class ClientController(val name: String, val skin: Skin, val splendidGame: SplendidGame) {
 
     var model: CommonModel = CommonModel.empty()
-    private var  client: Client = object :Client(){
+    private var client: Client = object : Client() {
         override fun sendUDP(p0: Any?): Int {
             throw IllegalStateException()
         }
@@ -52,7 +53,7 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
         players.filter { it != name }.forEach {
             enemies.add(PlayerStateModel.emptyEnemy(it))
         }
-        val playerTableModel = PlayerTableModel(name,playerStateModel, enemies)
+        val playerTableModel = PlayerTableModel(name, playerStateModel, enemies)
         val reservedCardsModel = ReservedCardsModel.empty()
         model = CommonModel.empty(cardTableModel,
                 resourceModel,
@@ -60,7 +61,11 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
                 reservedCardsModel)
 
         val cardTableView = CardTableView(skin, cardTableModel)
-        CardTableController(cardTableView, cardTableModel)
+        val cardTableController = CardTableController(cardTableView,
+                cardTableModel,
+                reservedCardsModel,
+                playerStateModel,
+                model)
 
         val playerTableView = PlayerTableView(playerTableModel, skin)
         val resourceView = ResourceTableView(skin, resourceModel)
@@ -82,9 +87,12 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
             if (model.getPlayerTurn() && model.getActionCorrect()) {
                 model.setPlayerTurn(false)
                 model.setActionCorrect(false)
-                when(model.playerEvent){
-                    PlayerEvent.GET_COINS ->{
+                when (model.playerEvent) {
+                    PlayerEvent.GET_COINS -> {
                         client.sendTCP(resourceController.getEvent())
+                    }
+                    PlayerEvent.BUY ->{
+//                        client.sendTCP(cardTableController.getBuyEvent())
                     }
                 }
             } else {
@@ -120,7 +128,8 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
         model.resourceModel.setResourceAvailable(received.boardsCoinsAvailable)
         val modelForPlayer = model.playerTableModel.getModelForPlayer(received.player)
         received.balance.forEach {
-            modelForPlayer.setWalletAmount(it.key,modelForPlayer.wallet.getOrDefault(it.key,0)+it.value)
+            modelForPlayer.setWalletAmount(it.key,
+                    modelForPlayer.wallet.getOrDefault(it.key, 0) + it.value)
         }
     }
 
