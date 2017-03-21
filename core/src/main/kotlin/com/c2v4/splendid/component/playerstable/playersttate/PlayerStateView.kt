@@ -54,7 +54,7 @@ class PlayerStateView(val model: PlayerStateModel, skin: Skin) : Table(skin) {
         add(Image(skin, "icon/cards"))
         cards.forEach {
             add(it.value)
-            it.value.setText("${model.cards.getOrElse(it.key, { 0 })}")
+            it.value.setText("${model.cardResources.getOrElse(it.key, { 0 })}")
         }
         add()
         add(reservedCards).padLeft(10f)
@@ -64,7 +64,7 @@ class PlayerStateView(val model: PlayerStateModel, skin: Skin) : Table(skin) {
         sums.forEach {
             add(it.value)
             it.value.setText("${model.wallet.getOrElse(it.key,
-                    { 0 }) + model.cards.getOrElse(it.key, { 0 })}")
+                    { 0 }) + model.cardResources.getOrElse(it.key, { 0 })}")
         }
         add(pointLabel).padLeft(10f)
 
@@ -75,7 +75,7 @@ class PlayerStateView(val model: PlayerStateModel, skin: Skin) : Table(skin) {
         model.cardsReservedObs.add { amount -> reservedCards.setText("${amount}") }
         model.walletChangeObs.add { resource, amount ->
             wallet[resource]!!.setText("$amount")
-            sums[resource]!!.setText("${amount + model.cards.getOrElse(resource, { 0 })}")
+            sums[resource]!!.setText("${amount + model.cardResources.getOrElse(resource, { 0 })}")
             walletSum.setText("${model.wallet.filterKeys { it != resource }.values.sum() + amount}")
         }
         model.pointsObs.add { amount -> pointLabel.setText("$amount") }
@@ -84,7 +84,6 @@ class PlayerStateView(val model: PlayerStateModel, skin: Skin) : Table(skin) {
     }
 
     fun onClick(resource: Resource,listener: (InputEvent, ClickableResource) -> Unit){
-        println("Listenet added: "+resource)
         gems[resource]!!.onClick(listener)
     }
 

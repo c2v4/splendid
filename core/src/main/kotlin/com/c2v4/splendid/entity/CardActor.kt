@@ -41,7 +41,7 @@ class CardActor(card: Card, skin: Skin) : Table(skin) {
         val resourceTable = Table(skin)
         resourceTable.bottom().right()
         resourceTable.defaults().pad(5f)
-        card.costs.entries.forEach {
+        card.cost.entries.forEach {
             val image = Image(skin, "gem/${it.key.name.toLowerCase()}")
             image.setScaling(Scaling.fit)
             val scale = 0.65f

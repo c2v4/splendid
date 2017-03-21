@@ -33,7 +33,6 @@ class CommonModel(var playerEvent: PlayerEvent,
     }
 
     fun setPlayerTurn(playerTurn: Boolean) {
-        println("playerTurn = ${playerTurn}")
         this.playerTurn = playerTurn
         turnListeners.forEach { it.invoke(playerTurn) }
     }

@@ -14,6 +14,7 @@ import com.c2v4.splendid.component.reservedcard.ReservedCardsView
 import com.c2v4.splendid.component.resourcetable.ResourceTableController
 import com.c2v4.splendid.component.resourcetable.ResourceTableModel
 import com.c2v4.splendid.component.resourcetable.ResourceTableView
+import com.c2v4.splendid.core.model.Noble.Companion.POINTS_FOR_NOBLE
 import com.c2v4.splendid.core.model.Player
 import com.c2v4.splendid.core.model.Resource
 import com.c2v4.splendid.core.util.merge
@@ -84,7 +85,6 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
                 ReservedCardsView(reservedCardsModel, skin),
                 model)
         boardActor.onButtonClick { inputEvent, button ->
-            println("GO")
             if (model.getPlayerTurn() && model.getActionCorrect()) {
                 model.setPlayerTurn(false)
                 model.setActionCorrect(false)
@@ -94,6 +94,9 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
                     }
                     PlayerEvent.RESERVE -> {
                         client.sendTCP(cardTableController.getReserveEvent(resourceController.getEvent().returned))
+                    }
+                    PlayerEvent.BUY -> {
+                        client.sendTCP(cardTableController.getBuyEvent())
                     }
                 }
             } else {
@@ -156,6 +159,26 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
             model.reservedCardsModel.setCard(card, received.cardPosition)
         }
         model.cardTableModel.changeCard(received.tier, received.position, null)
+    }
+
+    fun cardBought(received: CardBought) {
+        val modelForPlayer = model.playerTableModel.getModelForPlayer(received.playerName)
+        val card = model.cardTableModel.cards[received.tier][received.position]!!
+        modelForPlayer.setPointsAmount(modelForPlayer.points + card.points)
+        modelForPlayer.setCardAmount(card.resource,
+                modelForPlayer.cardResources.getOrDefault(card.resource, 0) + 1)
+        received.toPay.forEach {
+            modelForPlayer.setWalletAmount(it.key,
+                    modelForPlayer.wallet.getOrDefault(it.key, 0) - it.value)
+        }
+        model.resourceModel.setResourceAvailable(model.resourceModel.resourcesAvailable.merge(received.toPay))
+        model.cardTableModel.changeCard(received.tier, received.position, null)
+    }
+
+    fun nobleTaken(received: NobleTaken) {
+        val modelForPlayer = model.playerTableModel.getModelForPlayer(received.playerName)
+        modelForPlayer.setPointsAmount(modelForPlayer.points + POINTS_FOR_NOBLE)
+        model.cardTableModel.changeNoble(received.position, null)
     }
 
 

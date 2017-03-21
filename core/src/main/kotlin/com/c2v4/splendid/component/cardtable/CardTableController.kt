@@ -12,6 +12,7 @@ import com.c2v4.splendid.core.model.Resource
 import com.c2v4.splendid.core.util.canBuy
 import com.c2v4.splendid.core.util.merge
 import com.c2v4.splendid.entity.CardActor
+import com.c2v4.splendid.network.message.game.CardBuy
 import com.c2v4.splendid.network.message.game.ReserveCard
 
 class CardTableController(val view: CardTableView,
@@ -39,12 +40,13 @@ class CardTableController(val view: CardTableView,
                 this.tier = tier
                 this.position = position
                 if (cardClicked == null) {
-                    if (canBuy(card.costs, playerStateModel.wallet.merge(playerStateModel.cards))) {
+                    val playerWealth = playerStateModel.wallet.merge(playerStateModel.cardResources)
+                    if (canBuy(card.cost, playerWealth)) {
                         cardClicked = card
                         actor.color = Color.RED
                         commonModel.playerEvent = PlayerEvent.BUY
                         lastActor = actor
-                        commonModel.setActionCorrect(true)
+                        commonModel.setActionCorrect(canBuyWithoutInteraction(card, playerWealth))
                     } else {
                         if (playerStateModel.cardsReserved < 3) {
                             cardClicked = card
@@ -58,19 +60,11 @@ class CardTableController(val view: CardTableView,
                                 if (playerStateModel.cardsReserved < 3) {
                                     reserve(actor)
                                 } else {
-                                    actor.color = Color.WHITE
-                                    commonModel.playerEvent = PlayerEvent.NONE
-                                    commonModel.setActionCorrect(false)
-                                    lastActor = null
-                                    cardClicked = null
+                                    resetCard(actor)
                                 }
                             }
                             PlayerEvent.RESERVE -> {
-                                actor.color = Color.WHITE
-                                commonModel.playerEvent = PlayerEvent.NONE
-                                commonModel.setActionCorrect(false)
-                                lastActor = null
-                                cardClicked = null
+                                resetCard(actor)
                             }
                             PlayerEvent.NONE -> throw IllegalStateException()
                             PlayerEvent.GET_COINS -> throw IllegalStateException()
@@ -79,6 +73,25 @@ class CardTableController(val view: CardTableView,
                 }
             }
         }
+    }
+
+    private fun canBuyWithoutInteraction(card: Card, playerWealth: Map<Resource, Int>): Boolean {
+//        if (canBuy(card.cost, playerWealth.filter { it.key != Resource.GOLD })) {
+//            return true
+//        } else {
+//            val typesOfResourcesPaidWidthGold = playerWealth.filter { it.key != Resource.GOLD }.subtract(
+//                    card.cost).count { it.value < 0 }
+//            return typesOfResourcesPaidWidthGold < 2
+//        }
+        return true
+    }
+
+    private fun resetCard(actor: CardActor) {
+        actor.color = Color.WHITE
+        commonModel.playerEvent = PlayerEvent.NONE
+        commonModel.setActionCorrect(false)
+        lastActor = null
+        cardClicked = null
     }
 
     private fun reserve(actor: CardActor) {
@@ -91,17 +104,21 @@ class CardTableController(val view: CardTableView,
         commonModel.setActionCorrect(amountToReturn < 1)
     }
 
-    fun getReserveEvent(returned:Map<Resource,Int> = mapOf()): Any? {
+    fun getReserveEvent(returned: Map<Resource, Int> = mapOf()): Any? {
         cardClicked = null
         lastActor!!.color = Color.WHITE
         commonModel.playerEvent = PlayerEvent.NONE
         commonModel.setActionCorrect(false)
-        return ReserveCard(tier, position,returned)
+        return ReserveCard(tier, position, returned)
+    }
+
+    fun  getBuyEvent(): CardBuy {
+        cardClicked = null
+        lastActor!!.color = Color.WHITE
+        commonModel.playerEvent = PlayerEvent.NONE
+        commonModel.setActionCorrect(false)
+        return CardBuy(tier,position)
     }
 
 
-}
-
-enum class CardClickState {
-    NONE, RESERVE, BUY
 }

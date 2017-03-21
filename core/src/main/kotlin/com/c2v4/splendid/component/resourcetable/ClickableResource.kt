@@ -23,7 +23,6 @@ class ClickableResource(skin: Skin, val resource: Resource) : Table(skin) {
 
     fun setOnClick(listener: (InputEvent, ClickableResource) -> Unit) {
         onClick{ i:InputEvent, c:ClickableResource ->
-            println("Clicked: "+resource)
             listener.invoke(i,c) }
     }
 

@@ -20,4 +20,7 @@ interface GameCoordinator {
                      position: Int,
                      returned: Resource?)
 
+    fun cardBought(player: Player, tier: Int, position: Int, toPay: Map<Resource, Int>)
+    fun nobleTaken(player: Player, position: Int)
+
 }

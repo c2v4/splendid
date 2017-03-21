@@ -47,6 +47,13 @@ class ServerGameCoordinator(val playersToConnections: MutableMap<Player, Connect
                               returned: Resource?) {
         sendToEveryone(CardReserved(associator.getPlayerName(player),cardPosition,tier,position,returned))
     }
+    override fun cardBought(player: Player, tier: Int, position: Int, toPay: Map<Resource, Int>) {
+        sendToEveryone(CardBought(associator.getPlayerName(player),tier,position,toPay))
+    }
+
+    override fun nobleTaken(player: Player, position: Int) {
+        sendToEveryone(NobleTaken(associator.getPlayerName(player),position))
+    }
 
     private fun sendToEveryone(toSend: Any?) {
         playersToConnections.values.forEach { it.sendTCP(toSend) }
@@ -57,3 +64,7 @@ class ServerGameCoordinator(val playersToConnections: MutableMap<Player, Connect
     }
 
 }
+
+
+
+

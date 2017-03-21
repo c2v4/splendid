@@ -5,12 +5,12 @@ import java.util.*
 
 
 class PlayerStateModel(
-                       val wallet: MutableMap<Resource, Int>,
-                       val cards: MutableMap<Resource, Int>,
-                       var cardsReserved: Int,
-                       var points: Int,
-                       val name: String = "",
-                       val displayName: Boolean = false) {
+        val wallet: MutableMap<Resource, Int>,
+        val cardResources: MutableMap<Resource, Int>,
+        var cardsReserved: Int,
+        var points: Int,
+        val name: String = "",
+        val displayName: Boolean = false) {
     val walletChangeObs = mutableListOf<(resource: Resource, amount: Int) -> Unit>()
     val cardChangeObs = mutableListOf<(resource: Resource, amount: Int) -> Unit>()
     val cardsReservedObs = mutableListOf<(amount: Int) -> Unit>()
@@ -31,7 +31,7 @@ class PlayerStateModel(
 
     fun setCardAmount(resource: Resource, amount: Int) {
         cardChangeObs.forEach { it.invoke(resource, amount) }
-        cards[resource] = amount
+        cardResources[resource] = amount
     }
 
     fun setWalletAmount(resource: Resource, amount: Int) {
