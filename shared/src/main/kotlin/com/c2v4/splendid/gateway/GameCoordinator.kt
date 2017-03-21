@@ -14,5 +14,10 @@ interface GameCoordinator {
     fun cardDealt(tier: Int, position: Int, card: Card)
     fun nobleDealt(position: Int, noble: Noble)
     fun sendStartGameEvent(lobby: Set<String>)
+    fun cardReserved(player: Player,
+                     cardPosition: Int,
+                     tier: Int,
+                     position: Int,
+                     returned: Resource?)
 
 }

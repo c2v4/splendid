@@ -34,7 +34,6 @@ class ResourceTableController(val resourceTable: ResourceTableView,
     }
 
     fun onClickResourceTable(resource: Resource) {
-        println("Clicked resource on Available Resources: " + resource)
         if (commonModel.playerEvent == PlayerEvent.NONE) {
             commonModel.playerEvent = PlayerEvent.GET_COINS
         }
@@ -104,26 +103,39 @@ class ResourceTableController(val resourceTable: ResourceTableView,
     }
 
     fun onClickPlayer(resource: Resource) {
-        if (isTakenCorrect(clickedTableResources)) {
+        if (commonModel.playerEvent == PlayerEvent.GET_COINS && isTakenCorrect(clickedTableResources)) {
             val merged = clickedTableResources.merge(playerStateModel.wallet)
             val amountToReturn = merged.values.sum() - 10
-            if (amountToReturn > 0) {
-                val stillToReturn = amountToReturn - clickedPlayerResources.values.sum()
-                if (clickedPlayerResources.containsKey(resource)) {
-                    if (stillToReturn > 0 && merged.getOrDefault(resource,
-                            0) >= (clickedPlayerResources.getOrDefault(resource, 0) + 1)) {
-                        setPlayerResource(resource,
-                                clickedPlayerResources.getOrDefault(resource, 0) + 1)
-                    } else {
-                        setPlayerResource(resource, 0)
-                    }
+            setPlayerResourceClicked(amountToReturn, merged, resource)
+            checkActionCorrect()
+        }
+        if (commonModel.playerEvent == PlayerEvent.RESERVE) {
+            val amountToReturn = playerStateModel.wallet.values.sum() - 10 + if (resourceTableModel.resourcesAvailable.getOrElse(
+                    Resource.GOLD,
+                    { 0 }) > 0) 1 else 0
+            setPlayerResourceClicked(amountToReturn, playerStateModel.wallet, resource)
+            commonModel.setActionCorrect(amountToReturn < 1 || clickedPlayerResources.values.sum() == 1)
+        }
+    }
+
+    private fun setPlayerResourceClicked(amountToReturn: Int,
+                                         playerSummedWallet: Map<Resource, Int>,
+                                         resource: Resource) {
+        if (amountToReturn > 0) {
+            val stillToReturn = amountToReturn - clickedPlayerResources.values.sum()
+            if (clickedPlayerResources.containsKey(resource)) {
+                if (stillToReturn > 0 && playerSummedWallet.getOrDefault(resource,
+                        0) >= (clickedPlayerResources.getOrDefault(resource, 0) + 1)) {
+                    setPlayerResource(resource,
+                            clickedPlayerResources.getOrDefault(resource, 0) + 1)
                 } else {
-                    if (stillToReturn > 0) {
-                        setPlayerResource(resource, 1)
-                    }
+                    setPlayerResource(resource, 0)
+                }
+            } else {
+                if (stillToReturn > 0) {
+                    setPlayerResource(resource, 1)
                 }
             }
-            checkActionCorrect()
         }
     }
 
@@ -146,6 +158,7 @@ class ResourceTableController(val resourceTable: ResourceTableView,
     }
 
     fun getEvent(): TakeCoins {
+        commonModel.playerEvent = PlayerEvent.NONE
         val takeCoins = TakeCoins(clickedTableResources, clickedPlayerResources)
         resetPlayerResources()
         resetTableResources()

@@ -4,11 +4,16 @@ import com.c2v4.splendid.core.model.Card
 
 class ReservedCardsModel(val cards:Array<Card?>){
 
-    val cardChangeObserver:MutableList<(position:Int,card:Card)->Unit> = mutableListOf()
+    val cardChangeObserver:MutableList<(position:Int,card:Card?)->Unit> = mutableListOf()
     companion object{
         fun empty():ReservedCardsModel{
             return ReservedCardsModel(kotlin.arrayOfNulls<Card>(3))
         }
+    }
+
+    fun setCard(card: Card?, position: Int) {
+        cards[position] = card
+        cardChangeObserver.forEach { it.invoke(position,card) }
     }
 
 }

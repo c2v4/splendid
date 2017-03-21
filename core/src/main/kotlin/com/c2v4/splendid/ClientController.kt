@@ -15,11 +15,11 @@ import com.c2v4.splendid.component.resourcetable.ResourceTableController
 import com.c2v4.splendid.component.resourcetable.ResourceTableModel
 import com.c2v4.splendid.component.resourcetable.ResourceTableView
 import com.c2v4.splendid.core.model.Player
+import com.c2v4.splendid.core.model.Resource
+import com.c2v4.splendid.core.util.merge
+import com.c2v4.splendid.core.util.subtract
 import com.c2v4.splendid.entity.BoardView
-import com.c2v4.splendid.network.message.game.CardDeal
-import com.c2v4.splendid.network.message.game.CoinsTaken
-import com.c2v4.splendid.network.message.game.InitialCoins
-import com.c2v4.splendid.network.message.game.NobleDeal
+import com.c2v4.splendid.network.message.game.*
 import com.c2v4.splendid.screen.TestScreen
 import com.esotericsoftware.kryonet.Client
 
@@ -64,6 +64,7 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
         val cardTableController = CardTableController(cardTableView,
                 cardTableModel,
                 reservedCardsModel,
+                resourceModel,
                 playerStateModel,
                 model)
 
@@ -91,8 +92,8 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
                     PlayerEvent.GET_COINS -> {
                         client.sendTCP(resourceController.getEvent())
                     }
-                    PlayerEvent.BUY ->{
-//                        client.sendTCP(cardTableController.getBuyEvent())
+                    PlayerEvent.RESERVE -> {
+                        client.sendTCP(cardTableController.getReserveEvent(resourceController.getEvent().returned))
                     }
                 }
             } else {
@@ -131,6 +132,30 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
             modelForPlayer.setWalletAmount(it.key,
                     modelForPlayer.wallet.getOrDefault(it.key, 0) + it.value)
         }
+    }
+
+    fun cardReserved(received: CardReserved) {
+        val modelForPlayer = model.playerTableModel.getModelForPlayer(received.playerName)
+        modelForPlayer.setCardsReservedAmount(modelForPlayer.cardsReserved + 1)
+        val amountOfGold = model.resourceModel.resourcesAvailable.getOrDefault(Resource.GOLD, 0)
+        if (amountOfGold > 0) {
+            val subtracted = model.resourceModel.resourcesAvailable.subtract(mapOf(Resource.GOLD to 1))
+            model.resourceModel.setResourceAvailable(subtracted)
+            modelForPlayer.setWalletAmount(Resource.GOLD,
+                    modelForPlayer.wallet.getOrDefault(Resource.GOLD, 0) + 1)
+        }
+        if (received.returned != null) {
+            val receivedNotNull = received.returned!!
+            modelForPlayer.setWalletAmount(receivedNotNull,
+                    modelForPlayer.wallet.getOrDefault(receivedNotNull, 0) - 1)
+            val added = model.resourceModel.resourcesAvailable.merge(mapOf(receivedNotNull to 1))
+            model.resourceModel.setResourceAvailable(added)
+        }
+        if (received.playerName == name) {
+            val card = model.cardTableModel.cards[received.tier][received.position]
+            model.reservedCardsModel.setCard(card, received.cardPosition)
+        }
+        model.cardTableModel.changeCard(received.tier, received.position, null)
     }
 
 

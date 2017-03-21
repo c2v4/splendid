@@ -6,19 +6,25 @@ import com.c2v4.splendid.component.CommonModel
 import com.c2v4.splendid.component.PlayerEvent
 import com.c2v4.splendid.component.playerstable.playersttate.PlayerStateModel
 import com.c2v4.splendid.component.reservedcard.ReservedCardsModel
+import com.c2v4.splendid.component.resourcetable.ResourceTableModel
 import com.c2v4.splendid.core.model.Card
+import com.c2v4.splendid.core.model.Resource
 import com.c2v4.splendid.core.util.canBuy
 import com.c2v4.splendid.core.util.merge
 import com.c2v4.splendid.entity.CardActor
+import com.c2v4.splendid.network.message.game.ReserveCard
 
 class CardTableController(val view: CardTableView,
                           val model: CardTableModel,
                           val reservedCardsModel: ReservedCardsModel,
+                          val resourceTableModel: ResourceTableModel,
                           val playerStateModel: PlayerStateModel,
                           val commonModel: CommonModel) {
 
     var cardClicked: Card? = null
     var lastActor: Actor? = null
+    var tier: Int = -1
+    var position: Int = -1
 
     init {
         view.registerController(this)
@@ -30,9 +36,10 @@ class CardTableController(val view: CardTableView,
                 PlayerEvent.BUY).contains(commonModel.playerEvent)) {
             val card = model.cards[tier][position]
             if (card != null) {
+                this.tier = tier
+                this.position = position
                 if (cardClicked == null) {
-                    if (canBuy(card.costs,
-                            playerStateModel.wallet.merge(playerStateModel.cards))) {
+                    if (canBuy(card.costs, playerStateModel.wallet.merge(playerStateModel.cards))) {
                         cardClicked = card
                         actor.color = Color.RED
                         commonModel.playerEvent = PlayerEvent.BUY
@@ -41,10 +48,7 @@ class CardTableController(val view: CardTableView,
                     } else {
                         if (playerStateModel.cardsReserved < 3) {
                             cardClicked = card
-                            actor.color = Color.YELLOW
-                            commonModel.playerEvent = PlayerEvent.RESERVE
-                            lastActor = actor
-                            commonModel.setActionCorrect(true)
+                            reserve(actor)
                         }
                     }
                 } else {
@@ -52,10 +56,7 @@ class CardTableController(val view: CardTableView,
                         when (commonModel.playerEvent) {
                             PlayerEvent.BUY -> {
                                 if (playerStateModel.cardsReserved < 3) {
-                                    actor.color = Color.YELLOW
-                                    commonModel.playerEvent = PlayerEvent.RESERVE
-                                    lastActor = actor
-                                    commonModel.setActionCorrect(true)
+                                    reserve(actor)
                                 } else {
                                     actor.color = Color.WHITE
                                     commonModel.playerEvent = PlayerEvent.NONE
@@ -78,6 +79,24 @@ class CardTableController(val view: CardTableView,
                 }
             }
         }
+    }
+
+    private fun reserve(actor: CardActor) {
+        actor.color = Color.YELLOW
+        commonModel.playerEvent = PlayerEvent.RESERVE
+        lastActor = actor
+        val amountToReturn = playerStateModel.wallet.values.sum() - 10 + if (resourceTableModel.resourcesAvailable.getOrElse(
+                Resource.GOLD,
+                { 0 }) > 0) 1 else 0
+        commonModel.setActionCorrect(amountToReturn < 1)
+    }
+
+    fun getReserveEvent(returned:Map<Resource,Int> = mapOf()): Any? {
+        cardClicked = null
+        lastActor!!.color = Color.WHITE
+        commonModel.playerEvent = PlayerEvent.NONE
+        commonModel.setActionCorrect(false)
+        return ReserveCard(tier, position,returned)
     }
 
 

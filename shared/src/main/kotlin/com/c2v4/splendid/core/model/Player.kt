@@ -1,5 +1,5 @@
 package com.c2v4.splendid.core.model
 
-class Player(cards: List<Card> = listOf(),var wallet:Map<Resource,Int> = mutableMapOf()) {
-    val cards: MutableList<Card> = cards.toMutableList()
+class Player(val cardsReserved: Array<Card?> = arrayOfNulls<Card>(3), var wallet: Map<Resource, Int> = mutableMapOf(),
+             var resourcesFromCards: Map<Resource, Int> = mutableMapOf()) {
 }

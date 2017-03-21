@@ -12,6 +12,7 @@ import com.esotericsoftware.kryonet.Connection
 
 class ServerGameCoordinator(val playersToConnections: MutableMap<Player, Connection>,
                             val associator: ConnectionAssociator) : GameCoordinator {
+
     override fun sendStartGameEvent(lobby: Set<String>) {
         sendToEveryone(StartGame(lobby))
     }
@@ -37,6 +38,14 @@ class ServerGameCoordinator(val playersToConnections: MutableMap<Player, Connect
 
     fun sendInitialState(availableCoins: Map<Resource, Int>) {
         sendToEveryone(InitialCoins(availableCoins))
+    }
+
+    override fun cardReserved(player: Player,
+                              cardPosition: Int,
+                              tier: Int,
+                              position: Int,
+                              returned: Resource?) {
+        sendToEveryone(CardReserved(associator.getPlayerName(player),cardPosition,tier,position,returned))
     }
 
     private fun sendToEveryone(toSend: Any?) {

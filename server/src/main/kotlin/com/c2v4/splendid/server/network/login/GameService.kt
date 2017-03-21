@@ -5,6 +5,7 @@ import com.c2v4.splendid.core.model.Board
 import com.c2v4.splendid.core.model.Deck
 import com.c2v4.splendid.core.model.Player
 import com.c2v4.splendid.core.model.Resource
+import com.c2v4.splendid.network.message.game.ReserveCard
 import com.c2v4.splendid.network.message.game.TakeCoins
 import com.c2v4.splendid.server.data.InitialDataLoader
 import com.c2v4.splendid.server.network.ConnectionAssociator
@@ -14,6 +15,7 @@ import java.util.*
 interface GameService {
     fun commenceGame(lobby: Set<String>)
     fun takeCoins(connection: Connection, received: TakeCoins)
+    fun reserveCard(connection: Connection, received: ReserveCard)
 
 }
 
@@ -33,15 +35,14 @@ class SimpleGameService(val associator: ConnectionAssociator,
             val player = Player()
             players.add(player)
             playersToConnections.put(player, associator.getConnection(it))
-            associator.associate(it,player)
+            associator.associate(it, player)
         }
 
-        val gameCoordinator = ServerGameCoordinator(playersToConnections,associator)
+        val gameCoordinator = ServerGameCoordinator(playersToConnections, associator)
 
         gameCoordinator.sendStartGameEvent(lobby)
 
         val availableCoins = initialDataLoader.initialBank(players.size)
-        val availableCoins1 = Resource.values().map { it to random.nextInt(5) }.toMap()
         gameCoordinator.sendInitialState(availableCoins)
         val game = Game(players,
                 Board(listOf(Deck.shuffledDeck(random, initialDataLoader.initialCards[0]),
@@ -55,7 +56,18 @@ class SimpleGameService(val associator: ConnectionAssociator,
     }
 
     override fun takeCoins(connection: Connection, received: TakeCoins) {
-        connectionsToGames[connection]!!.takeCoins(associator.getPlayer(connection),received.taken,received.returned)
+        getGame(connection).takeCoins(associator.getPlayer(connection),
+                received.taken,
+                received.returned)
     }
+
+    override fun reserveCard(connection: Connection, received: ReserveCard) {
+        getGame(connection).reserveCard(associator.getPlayer(connection),
+                received.tier,
+                received.position,
+                received.returned)
+    }
+
+    private fun getGame(connection: Connection) = connectionsToGames[connection]!!
 
 }

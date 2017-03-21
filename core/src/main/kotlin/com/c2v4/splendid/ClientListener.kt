@@ -28,6 +28,7 @@ class ClientListener(val clientController: ClientController) : Listener() {
                 is NobleDeal -> clientController.nobleDeal(received)
                 is YourTurn -> clientController.setPlayerTurn(true)
                 is CoinsTaken -> clientController.coinsTaken(received)
+                is CardReserved -> clientController.cardReserved(received)
             }
             return Unit
         })

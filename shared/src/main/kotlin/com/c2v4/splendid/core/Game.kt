@@ -6,6 +6,7 @@ import com.c2v4.splendid.core.model.Resource
 import com.c2v4.splendid.core.util.*
 import com.c2v4.splendid.gateway.GameCoordinator
 import java.util.*
+import kotlin.collections.HashMap
 
 class Game(players: List<Player>,
            val board: Board,
@@ -37,7 +38,7 @@ class Game(players: List<Player>,
                 { 0 }) > 3)) {
             player.wallet = player.wallet.merge(taken).subtractPositive(returned)
             board.availableCoins = board.availableCoins.merge(returned).subtractPositive(taken)
-            gameCoordinator.coinsTaken(player, taken.subtract(returned),board.availableCoins)
+            gameCoordinator.coinsTaken(player, taken.subtract(returned), board.availableCoins)
             setNextCurrentPlayer()
         } else {
             throw IllegalArgumentException()
@@ -69,5 +70,27 @@ class Game(players: List<Player>,
     private fun dealCard(position: Int, tier: Int) {
         val card = board.dealCard(tier, position)
         card.ifPresent { gameCoordinator.cardDealt(tier, position, it) }
+    }
+
+    fun reserveCard(player: Player, tier: Int, position: Int, returned: HashMap<Resource, Int>) {
+        if (player.cardsReserved.count { it != null } > 2) throw IllegalStateException()
+        val emptySpot = player.cardsReserved.indexOfFirst { it == null }
+        player.cardsReserved[emptySpot] = board.cardsOnBoard[tier][position]
+        val availableGold = board.availableCoins.getOrDefault(Resource.GOLD, 0)
+        var returnedResource:Resource? = null
+        if (availableGold > 0) {
+            board.availableCoins=board.availableCoins.subtractPositive(mapOf(Resource.GOLD to 1))
+            player.wallet = player.wallet.merge(mapOf(Resource.GOLD to 1))
+            if(player.wallet.values.sum()>10) {
+                if (returned.size == 0) throw IllegalArgumentException()
+                returnedResource = returned.keys.elementAt(0)
+                player.wallet = player.wallet.subtractPositive(mapOf(returnedResource to 1))
+                board.availableCoins=board.availableCoins.merge(mapOf(returnedResource to 1))
+            }
+        }
+        gameCoordinator.cardReserved(player, emptySpot, tier, position, returnedResource)
+        board.cardsOnBoard[tier][position] = null
+        dealCard(position, tier)
+        setNextCurrentPlayer()
     }
 }
