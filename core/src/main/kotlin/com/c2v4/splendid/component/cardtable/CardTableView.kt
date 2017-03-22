@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.c2v4.splendid.component.getCard
 import com.c2v4.splendid.component.getNoble
 import com.c2v4.splendid.core.model.Board
 import com.c2v4.splendid.core.model.Noble
@@ -42,12 +43,13 @@ class CardTableView(skin: Skin, model: CardTableModel) : Table(skin) {
         }
         model.addCardChangeObserver {
             tier, position, old, new ->
-            val newCardActor = com.c2v4.splendid.component.getCard(new, skin)
-            newCardActor.alpha = 0f
-            val fl = 0.5f
-            cardHolders[tier][position]!!.actor.addAction(Actions.sequence(Actions.fadeOut(fl),
-                    Actions.run { addActor(newCardActor, position, tier) }))
-            newCardActor.addAction(Actions.delay(fl, Actions.fadeIn(fl)))
+//            val newCardActor = com.c2v4.splendid.component.getCard(new, skin)
+//            newCardActor.alpha = 0f
+//            val fl = 0.5f
+//            cardHolders[tier][position]!!.actor.addAction(Actions.sequence(Actions.fadeOut(fl),
+//                    Actions.run { addActor(newCardActor, position, tier) }))
+//            newCardActor.addAction(Actions.delay(fl, Actions.fadeIn(fl)))
+            addActor(getCard(new, skin), position, tier)
         }
         model.addNobleChangeObserver { noblePosition, oldNoble, newNoble ->
             nobleHolders[noblePosition]!!.setActor(getNoble(newNoble, skin))
