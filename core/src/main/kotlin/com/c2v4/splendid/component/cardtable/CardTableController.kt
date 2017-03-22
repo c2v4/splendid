@@ -37,11 +37,11 @@ class CardTableController(val view: CardTableView,
                 PlayerEvent.BUY).contains(commonModel.playerEvent)) {
             val card = model.cards[tier][position]
             if (card != null) {
-                this.tier = tier
-                this.position = position
                 if (cardClicked == null) {
                     val playerWealth = playerStateModel.wallet.merge(playerStateModel.cardResources)
                     if (canBuy(card.cost, playerWealth)) {
+                        this.tier = tier
+                        this.position = position
                         cardClicked = card
                         actor.color = Color.RED
                         commonModel.playerEvent = PlayerEvent.BUY
@@ -95,6 +95,8 @@ class CardTableController(val view: CardTableView,
     }
 
     private fun reserve(actor: CardActor) {
+        this.tier = tier
+        this.position = position
         actor.color = Color.YELLOW
         commonModel.playerEvent = PlayerEvent.RESERVE
         lastActor = actor
