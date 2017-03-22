@@ -33,7 +33,7 @@ class ServerGameCoordinator(val playersToConnections: MutableMap<Player, Connect
     }
 
     override fun setCurrentPlayer(currentPlayer: Player) {
-        sendToPlayer(currentPlayer, YourTurn())
+        sendToEveryone(PlayerTurn(associator.getPlayerName(currentPlayer)))
     }
 
     fun sendInitialState(availableCoins: Map<Resource, Int>) {

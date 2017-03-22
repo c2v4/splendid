@@ -181,17 +181,24 @@ filter: Nearest,Nearest
 repeat: none
 icon/cards
   rotate: false
-  xy: 1, 1
+  xy: 513, 548
   size: 84, 77
   orig: 100, 100
   offset: 6, 12
   index: -1
 icon/gems
   rotate: false
-  xy: 1, 79
+  xy: 1, 114
   size: 511, 511
   orig: 512, 512
   offset: 1, 0
+  index: -1
+icon/player-turn
+  rotate: false
+  xy: 1, 1
+  size: 112, 112
+  orig: 112, 112
+  offset: 0, 0
   index: -1
 
 skin5.png

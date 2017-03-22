@@ -18,4 +18,10 @@ class PlayerTableModel(val name: String,
         throw IllegalStateException()
     }
 
+    fun getModelsForOtherPlayers(player:String):List<PlayerStateModel>{
+        var toReturn = players.filter { it.name!=player }
+        if(this.name!=player) toReturn += this.player
+        return toReturn
+    }
+
 }

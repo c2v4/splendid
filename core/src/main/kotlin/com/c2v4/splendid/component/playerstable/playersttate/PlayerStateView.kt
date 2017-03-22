@@ -31,6 +31,7 @@ class PlayerStateView(val model: PlayerStateModel, skin: Skin) : Table(skin) {
     val walletSum = Label("0", skin, FontManager.UI_FONT, Color.WHITE)
     val pointLabel = Label("0", skin, FontManager.UI_FONT, Color.WHITE)
     val gems = Resource.values().map { it to ClickableResource(skin, it) }.toMap()
+    val playerTurnIndicator = Image(skin,"icon/player-turn")
 
     init {
         defaults().padLeft(5f).padRight(5f)
@@ -38,7 +39,7 @@ class PlayerStateView(val model: PlayerStateModel, skin: Skin) : Table(skin) {
             add(model.name, FontManager.PLAYER_NAME_FONT, Color.WHITE).colspan(Resource.values().size+2)
             row()
         }
-        add()
+        add(playerTurnIndicator)
         Resource.values().forEach {
             add(gems[it])
         }
@@ -79,6 +80,10 @@ class PlayerStateView(val model: PlayerStateModel, skin: Skin) : Table(skin) {
             walletSum.setText("${model.wallet.filterKeys { it != resource }.values.sum() + amount}")
         }
         model.pointsObs.add { amount -> pointLabel.setText("$amount") }
+        playerTurnIndicator.isVisible = model.playersTurn
+        model.playerTurnObs.add{
+            playerTurnIndicator.isVisible = it
+        }
 
         pack()
     }

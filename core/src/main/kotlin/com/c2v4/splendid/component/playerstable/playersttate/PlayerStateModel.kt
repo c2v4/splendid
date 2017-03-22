@@ -1,6 +1,7 @@
 package com.c2v4.splendid.component.playerstable.playersttate
 
 import com.c2v4.splendid.core.model.Resource
+import com.c2v4.splendid.network.message.game.PlayerTurn
 import java.util.*
 
 
@@ -10,9 +11,11 @@ class PlayerStateModel(
         var cardsReserved: Int,
         var points: Int,
         val name: String = "",
-        val displayName: Boolean = false) {
+        val displayName: Boolean = false,
+        var playersTurn: Boolean = false) {
     val walletChangeObs = mutableListOf<(resource: Resource, amount: Int) -> Unit>()
     val cardChangeObs = mutableListOf<(resource: Resource, amount: Int) -> Unit>()
+    val playerTurnObs = mutableListOf<(isPlayerTurn: Boolean) -> Unit>()
     val cardsReservedObs = mutableListOf<(amount: Int) -> Unit>()
     val pointsObs = mutableListOf<(amount: Int) -> Unit>()
 
@@ -22,10 +25,11 @@ class PlayerStateModel(
                     HashMap((Resource.values().filter { it != Resource.GOLD }.map { it to 0 }).toMap()),
                     0, 0)
         }
-        fun emptyEnemy(name:String): PlayerStateModel {
+
+        fun emptyEnemy(name: String): PlayerStateModel {
             return PlayerStateModel(HashMap((Resource.values().map { it to 0 }).toMap()),
                     HashMap((Resource.values().filter { it != Resource.GOLD }.map { it to 0 }).toMap()),
-                    0, 0,name,true)
+                    0, 0, name, true)
         }
     }
 
@@ -47,6 +51,12 @@ class PlayerStateModel(
     fun setPointsAmount(amount: Int) {
         pointsObs.forEach { it.invoke(amount) }
         points = amount
+    }
+
+    fun setPlayerTurn(playerTurn: Boolean) {
+        playersTurn = playerTurn
+        playerTurnObs.forEach { it.invoke(playerTurn) }
+
     }
 
 }

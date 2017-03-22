@@ -26,7 +26,7 @@ class ClientListener(val clientController: ClientController) : Listener() {
                 is InitialCoins -> clientController.setInitialCoins(received)
                 is CardDeal -> clientController.cardDeal(received)
                 is NobleDeal -> clientController.nobleDeal(received)
-                is YourTurn -> clientController.setPlayerTurn(true)
+                is PlayerTurn -> clientController.setPlayerTurn(received)
                 is CoinsTaken -> clientController.coinsTaken(received)
                 is CardReserved -> clientController.cardReserved(received)
                 is CardBought -> clientController.cardBought(received)
