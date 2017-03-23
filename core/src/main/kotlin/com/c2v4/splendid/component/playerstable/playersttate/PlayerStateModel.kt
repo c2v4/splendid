@@ -33,7 +33,7 @@ class PlayerStateModel(
         }
     }
 
-    fun setCardAmount(resource: Resource, amount: Int) {
+    fun setCardResourcesAmount(resource: Resource, amount: Int) {
         cardChangeObs.forEach { it.invoke(resource, amount) }
         cardResources[resource] = amount
     }

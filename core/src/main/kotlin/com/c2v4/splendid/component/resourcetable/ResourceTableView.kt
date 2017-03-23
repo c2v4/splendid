@@ -33,7 +33,7 @@ class ResourceTableView(skin: Skin, model: ResourceTableModel) : Table(skin) {
         pack()
     }
 
-    fun onClick(resource: Resource,listener: (InputEvent, ClickableResource) -> Unit ) {
+    fun onClick(resource: Resource, listener: (InputEvent, ClickableResource) -> Unit) {
         clickableResources[resource]!!.setOnClick(listener)
     }
 
@@ -41,7 +41,7 @@ class ResourceTableView(skin: Skin, model: ResourceTableModel) : Table(skin) {
         clickableResources[resource]!!.setChosenAmount(amount)
     }
 
-    private fun setAmount(resource: Resource, amount: Int,color: Color= Color.WHITE) {
+    private fun setAmount(resource: Resource, amount: Int, color: Color = Color.WHITE) {
         amounts[resource]!!.setText("$amount")
     }
 

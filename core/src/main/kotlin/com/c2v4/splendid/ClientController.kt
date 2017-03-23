@@ -9,13 +9,13 @@ import com.c2v4.splendid.component.cardtable.CardTableView
 import com.c2v4.splendid.component.playerstable.PlayerTableModel
 import com.c2v4.splendid.component.playerstable.PlayerTableView
 import com.c2v4.splendid.component.playerstable.playersttate.PlayerStateModel
+import com.c2v4.splendid.component.reservedcard.ReservedCardsController
 import com.c2v4.splendid.component.reservedcard.ReservedCardsModel
 import com.c2v4.splendid.component.reservedcard.ReservedCardsView
 import com.c2v4.splendid.component.resourcetable.ResourceTableController
 import com.c2v4.splendid.component.resourcetable.ResourceTableModel
 import com.c2v4.splendid.component.resourcetable.ResourceTableView
 import com.c2v4.splendid.core.model.Noble.Companion.POINTS_FOR_NOBLE
-import com.c2v4.splendid.core.model.Player
 import com.c2v4.splendid.core.model.Resource
 import com.c2v4.splendid.core.util.merge
 import com.c2v4.splendid.core.util.subtract
@@ -55,11 +55,19 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
             enemies.add(PlayerStateModel.emptyEnemy(it))
         }
         val playerTableModel = PlayerTableModel(name, playerStateModel, enemies)
+
         val reservedCardsModel = ReservedCardsModel.empty()
+        val reservedCardsView = ReservedCardsView(reservedCardsModel, skin)
+
         model = CommonModel.empty(cardTableModel,
                 resourceModel,
                 playerTableModel,
                 reservedCardsModel)
+
+        val reservedCardsController = ReservedCardsController(reservedCardsView,
+                reservedCardsModel,
+                playerStateModel,
+                model)
 
         val cardTableView = CardTableView(skin, cardTableModel)
         val cardTableController = CardTableController(cardTableView,
@@ -82,7 +90,7 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
                 cardTableView,
                 resourceView,
                 playerTableView,
-                ReservedCardsView(reservedCardsModel, skin),
+                reservedCardsView,
                 model)
         boardActor.onButtonClick { inputEvent, button ->
             if (model.getPlayerTurn() && model.getActionCorrect()) {
@@ -98,6 +106,10 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
                     PlayerEvent.BUY -> {
                         client.sendTCP(cardTableController.getBuyEvent())
                     }
+                    PlayerEvent.BUY_RESERVED_CARD -> {
+                        client.sendTCP(reservedCardsController.getEvent())
+                    }
+                    PlayerEvent.NONE -> throw IllegalStateException()
                 }
             } else {
                 throw IllegalStateException()
@@ -121,7 +133,7 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
 
     fun setPlayerTurn(received: PlayerTurn) {
         val modelForPlayer = model.playerTableModel.getModelForPlayer(received.playerName)
-        model.setPlayerTurn(received.playerName==name)
+        model.setPlayerTurn(received.playerName == name)
         modelForPlayer.setPlayerTurn(true)
         model.playerTableModel.getModelsForOtherPlayers(received.playerName).forEach {
             it.setPlayerTurn(false)
@@ -170,14 +182,31 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
         val modelForPlayer = model.playerTableModel.getModelForPlayer(received.playerName)
         val card = model.cardTableModel.cards[received.tier][received.position]!!
         modelForPlayer.setPointsAmount(modelForPlayer.points + card.points)
-        modelForPlayer.setCardAmount(card.resource,
+        modelForPlayer.setCardResourcesAmount(card.resource,
                 modelForPlayer.cardResources.getOrDefault(card.resource, 0) + 1)
         received.toPay.forEach {
             modelForPlayer.setWalletAmount(it.key,
                     modelForPlayer.wallet.getOrDefault(it.key, 0) - it.value)
         }
-        model.resourceModel.setResourceAvailable(model.resourceModel.resourcesAvailable.merge(received.toPay))
+        model.resourceModel.setResourceAvailable(model.resourceModel.resourcesAvailable.merge(
+                received.toPay))
         model.cardTableModel.changeCard(received.tier, received.position, null)
+    }
+
+    fun reservedCardBought(received: ReservedCardBought) {
+        val modelForPlayer = model.playerTableModel.getModelForPlayer(received.playerName)
+        val card = model.reservedCardsModel.cards[received.position]!!
+        modelForPlayer.setCardsReservedAmount(modelForPlayer.cardsReserved - 1)
+        modelForPlayer.setPointsAmount(modelForPlayer.points + card.points)
+        modelForPlayer.setCardResourcesAmount(card.resource,
+                modelForPlayer.cardResources.getOrDefault(card.resource, 0) + 1)
+        received.toPay.forEach {
+            modelForPlayer.setWalletAmount(it.key,
+                    modelForPlayer.wallet.getOrDefault(it.key, 0) - it.value)
+        }
+        model.resourceModel.setResourceAvailable(model.resourceModel.resourcesAvailable.merge(
+                received.toPay))
+        model.reservedCardsModel.setCard(null,received.position)
     }
 
     fun nobleTaken(received: NobleTaken) {
@@ -185,6 +214,5 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
         modelForPlayer.setPointsAmount(modelForPlayer.points + POINTS_FOR_NOBLE)
         model.cardTableModel.changeNoble(received.position, null)
     }
-
 
 }

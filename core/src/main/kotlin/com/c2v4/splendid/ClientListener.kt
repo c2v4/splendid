@@ -31,6 +31,7 @@ class ClientListener(val clientController: ClientController) : Listener() {
                 is CardReserved -> clientController.cardReserved(received)
                 is CardBought -> clientController.cardBought(received)
                 is NobleTaken -> clientController.nobleTaken(received)
+                is ReservedCardBought -> clientController.reservedCardBought(received)
             }
             return Unit
         })

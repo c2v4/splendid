@@ -2,6 +2,7 @@ package com.c2v4.splendid.server.network
 
 import com.c2v4.splendid.network.message.game.CardBuy
 import com.c2v4.splendid.network.message.game.ReserveCard
+import com.c2v4.splendid.network.message.game.ReservedCardBuy
 import com.c2v4.splendid.network.message.game.TakeCoins
 import com.c2v4.splendid.network.message.login.JoinLobby
 import com.c2v4.splendid.network.message.login.LoggedIn
@@ -55,6 +56,9 @@ class ServerListener(val associator: ConnectionAssociator,
                 }
                 is CardBuy -> {
                     gameService.cardBuy(connection,received)
+                }
+                is ReservedCardBuy ->{
+                    gameService.reservedCardBuy(connection,received)
                 }
             }
             return Unit

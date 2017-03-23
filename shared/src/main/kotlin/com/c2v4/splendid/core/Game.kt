@@ -105,31 +105,67 @@ class Game(players: List<Player>,
         val toPayWithGold = realCardCost.subtract(player.wallet).filter { it.value > 0 }.values.sum()
         val toPay = realCardCost.map {
             it.key to Math.min(it.value, player.wallet.getOrDefault(it.key, 0))
-        }.toMap().merge(mapOf(Resource.GOLD to toPayWithGold)).filter { it.value !=0 }
+        }.toMap().merge(mapOf(Resource.GOLD to toPayWithGold)).filter { it.value != 0 }
 
         player.resourcesFromCards = player.resourcesFromCards.merge(mapOf(card.resource to 1))
         player.points += card.points
         player.wallet = player.wallet.subtractPositive(toPay)
         board.availableCoins = board.availableCoins.merge(toPay)
         board.cardsOnBoard[tier][position] = null
-        gameCoordinator.cardBought(player,tier,position,toPay)
+        gameCoordinator.cardBought(player, tier, position, toPay)
 
         dealCard(position, tier)
 
         val noblesGained = mutableListOf<Int>()
         board.noblesOnBoard.forEachIndexed { index, noble ->
-            if (noble != null&& canBuy(noble.resources,player.resourcesFromCards)) {
+            if (noble != null && canBuy(noble.resources, player.resourcesFromCards)) {
                 noblesGained.add(index)
             }
         }
 
         noblesGained.forEach {
-            player.points+=POINTS_FOR_NOBLE
-            board.noblesOnBoard[it]=null
-            gameCoordinator.nobleTaken(player,it)
+            player.points += POINTS_FOR_NOBLE
+            board.noblesOnBoard[it] = null
+            gameCoordinator.nobleTaken(player, it)
         }
 
         setNextCurrentPlayer()
 
+    }
+
+    fun reservedCardBuy(player: Player, position: Int) {
+
+        val card = player.cardsReserved[position]!!
+        if (!canBuy(card.cost, player.wallet.merge(player.resourcesFromCards))) {
+            throw IllegalStateException()
+        }
+        val realCardCost = card.cost.subtract(player.resourcesFromCards).filter { it.value > 0 }
+        val toPayWithGold = realCardCost.subtract(player.wallet).filter { it.value > 0 }.values.sum()
+        val toPay = realCardCost.map {
+            it.key to Math.min(it.value, player.wallet.getOrDefault(it.key, 0))
+        }.toMap().merge(mapOf(Resource.GOLD to toPayWithGold)).filter { it.value != 0 }
+
+        player.cardsReserved[position] = null
+        player.resourcesFromCards = player.resourcesFromCards.merge(mapOf(card.resource to 1))
+        player.points += card.points
+        player.wallet = player.wallet.subtractPositive(toPay)
+        board.availableCoins = board.availableCoins.merge(toPay)
+
+        gameCoordinator.reservedCardBought(position, player, toPay)
+
+        val noblesGained = mutableListOf<Int>()
+        board.noblesOnBoard.forEachIndexed { index, noble ->
+            if (noble != null && canBuy(noble.resources, player.resourcesFromCards)) {
+                noblesGained.add(index)
+            }
+        }
+
+        noblesGained.forEach {
+            player.points += POINTS_FOR_NOBLE
+            board.noblesOnBoard[it] = null
+            gameCoordinator.nobleTaken(player, it)
+        }
+
+        setNextCurrentPlayer()
     }
 }

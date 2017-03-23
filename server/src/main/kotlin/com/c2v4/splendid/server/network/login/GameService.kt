@@ -7,6 +7,7 @@ import com.c2v4.splendid.core.model.Player
 import com.c2v4.splendid.core.model.Resource
 import com.c2v4.splendid.network.message.game.CardBuy
 import com.c2v4.splendid.network.message.game.ReserveCard
+import com.c2v4.splendid.network.message.game.ReservedCardBuy
 import com.c2v4.splendid.network.message.game.TakeCoins
 import com.c2v4.splendid.server.data.InitialDataLoader
 import com.c2v4.splendid.server.network.ConnectionAssociator
@@ -18,6 +19,7 @@ interface GameService {
     fun takeCoins(connection: Connection, received: TakeCoins)
     fun reserveCard(connection: Connection, received: ReserveCard)
     fun cardBuy(connection: Connection, received: CardBuy)
+    fun reservedCardBuy(connection: Connection, received: ReservedCardBuy)
 
 }
 
@@ -72,6 +74,10 @@ class SimpleGameService(val associator: ConnectionAssociator,
 
     override fun cardBuy(connection: Connection, received: CardBuy) {
         getGame(connection).cardBuy(associator.getPlayer(connection),received.tier,received.position)
+    }
+
+    override fun reservedCardBuy(connection: Connection, received: ReservedCardBuy) {
+        getGame(connection).reservedCardBuy(associator.getPlayer(connection),received.position)
     }
 
     private fun getGame(connection: Connection) = connectionsToGames[connection]!!

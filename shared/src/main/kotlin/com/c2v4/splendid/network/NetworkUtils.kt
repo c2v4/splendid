@@ -35,7 +35,9 @@ private val CLASSES_TO_REGISTER = listOf(SimpleLogIn::class.java,
         CardReserved::class.java,
         CardBuy::class.java,
         CardBought::class.java,
-        NobleTaken::class.java)
+        NobleTaken::class.java,
+        ReservedCardBuy::class.java,
+        ReservedCardBought::class.java)
 
 fun registerClasses(kryo: Kryo) {
     CLASSES_TO_REGISTER.forEach { kryo.register(it) }

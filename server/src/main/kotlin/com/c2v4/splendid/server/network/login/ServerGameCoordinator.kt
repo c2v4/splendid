@@ -55,6 +55,10 @@ class ServerGameCoordinator(val playersToConnections: MutableMap<Player, Connect
         sendToEveryone(NobleTaken(associator.getPlayerName(player),position))
     }
 
+    override fun reservedCardBought(position: Int,player:Player, toPay: Map<Resource, Int>) {
+        sendToEveryone(ReservedCardBought(position,associator.getPlayerName(player),toPay))
+    }
+
     private fun sendToEveryone(toSend: Any?) {
         playersToConnections.values.forEach { it.sendTCP(toSend) }
     }
