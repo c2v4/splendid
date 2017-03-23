@@ -50,7 +50,7 @@ class CardTableController(val view: CardTableView,
                     } else {
                         if (playerStateModel.cardsReserved < 3) {
                             cardClicked = card
-                            reserve(actor)
+                            reserve(actor, tier, position)
                         }
                     }
                 } else {
@@ -58,7 +58,7 @@ class CardTableController(val view: CardTableView,
                         when (commonModel.playerEvent) {
                             PlayerEvent.BUY -> {
                                 if (playerStateModel.cardsReserved < 3) {
-                                    reserve(actor)
+                                    reserve(actor, tier, position)
                                 } else {
                                     resetCard(actor)
                                 }
@@ -87,6 +87,8 @@ class CardTableController(val view: CardTableView,
     }
 
     private fun resetCard(actor: CardActor) {
+        tier = -1
+        position = -1
         actor.color = Color.WHITE
         commonModel.playerEvent = PlayerEvent.NONE
         commonModel.setActionCorrect(false)
@@ -94,7 +96,7 @@ class CardTableController(val view: CardTableView,
         cardClicked = null
     }
 
-    private fun reserve(actor: CardActor) {
+    private fun reserve(actor: CardActor, tier: Int, position: Int) {
         this.tier = tier
         this.position = position
         actor.color = Color.YELLOW
@@ -114,12 +116,12 @@ class CardTableController(val view: CardTableView,
         return ReserveCard(tier, position, returned)
     }
 
-    fun  getBuyEvent(): CardBuy {
+    fun getBuyEvent(): CardBuy {
         cardClicked = null
         lastActor!!.color = Color.WHITE
         commonModel.playerEvent = PlayerEvent.NONE
         commonModel.setActionCorrect(false)
-        return CardBuy(tier,position)
+        return CardBuy(tier, position)
     }
 
 
