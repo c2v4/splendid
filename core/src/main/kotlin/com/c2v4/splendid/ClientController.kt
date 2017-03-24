@@ -195,7 +195,7 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
 
     fun reservedCardBought(received: ReservedCardBought) {
         val modelForPlayer = model.playerTableModel.getModelForPlayer(received.playerName)
-        val card = model.reservedCardsModel.cards[received.position]!!
+        val card = received.card!!
         modelForPlayer.setCardsReservedAmount(modelForPlayer.cardsReserved - 1)
         modelForPlayer.setPointsAmount(modelForPlayer.points + card.points)
         modelForPlayer.setCardResourcesAmount(card.resource,

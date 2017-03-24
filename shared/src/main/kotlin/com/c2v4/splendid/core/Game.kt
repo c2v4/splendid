@@ -1,14 +1,12 @@
 package com.c2v4.splendid.core
 
 import com.c2v4.splendid.core.model.Board
-import com.c2v4.splendid.core.model.Noble
 import com.c2v4.splendid.core.model.Noble.Companion.POINTS_FOR_NOBLE
 import com.c2v4.splendid.core.model.Player
 import com.c2v4.splendid.core.model.Resource
 import com.c2v4.splendid.core.util.*
 import com.c2v4.splendid.gateway.GameCoordinator
 import java.util.*
-import kotlin.collections.HashMap
 
 class Game(players: List<Player>,
            val board: Board,
@@ -151,7 +149,7 @@ class Game(players: List<Player>,
         player.wallet = player.wallet.subtractPositive(toPay)
         board.availableCoins = board.availableCoins.merge(toPay)
 
-        gameCoordinator.reservedCardBought(position, player, toPay)
+        gameCoordinator.reservedCardBought(position, player,card, toPay)
 
         val noblesGained = mutableListOf<Int>()
         board.noblesOnBoard.forEachIndexed { index, noble ->

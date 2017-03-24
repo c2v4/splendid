@@ -22,6 +22,6 @@ interface GameCoordinator {
 
     fun cardBought(player: Player, tier: Int, position: Int, toPay: Map<Resource, Int>)
     fun nobleTaken(player: Player, position: Int)
-    fun reservedCardBought(position: Int,player:Player, toPay: Map<Resource, Int>)
+    fun reservedCardBought(position: Int,player:Player,card: Card, toPay: Map<Resource, Int>)
 
 }
