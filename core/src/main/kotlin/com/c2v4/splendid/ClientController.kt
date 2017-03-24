@@ -133,7 +133,7 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
 
     fun setPlayerTurn(received: PlayerTurn) {
         val modelForPlayer = model.playerTableModel.getModelForPlayer(received.playerName)
-        model.setPlayerTurn(received.playerName == name)
+        model.setPlayerTurn(isPlayerMe(received.playerName))
         modelForPlayer.setPlayerTurn(true)
         model.playerTableModel.getModelsForOtherPlayers(received.playerName).forEach {
             it.setPlayerTurn(false)
@@ -171,7 +171,7 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
             val added = model.resourceModel.resourcesAvailable.merge(mapOf(receivedNotNull to 1))
             model.resourceModel.setResourceAvailable(added)
         }
-        if (received.playerName == name) {
+        if (isPlayerMe(received.playerName)) {
             val card = model.cardTableModel.cards[received.tier][received.position]
             model.reservedCardsModel.setCard(card, received.cardPosition)
         }
@@ -206,7 +206,9 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
         }
         model.resourceModel.setResourceAvailable(model.resourceModel.resourcesAvailable.merge(
                 received.toPay))
-        model.reservedCardsModel.setCard(null,received.position)
+        if (isPlayerMe(received.playerName)) {
+            model.reservedCardsModel.setCard(null, received.position)
+        }
     }
 
     fun nobleTaken(received: NobleTaken) {
@@ -214,5 +216,7 @@ class ClientController(val name: String, val skin: Skin, val splendidGame: Splen
         modelForPlayer.setPointsAmount(modelForPlayer.points + POINTS_FOR_NOBLE)
         model.cardTableModel.changeNoble(received.position, null)
     }
+
+    fun isPlayerMe(playerName: String) = playerName == name
 
 }
